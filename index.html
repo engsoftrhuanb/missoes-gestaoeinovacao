@@ -319,7 +319,10 @@ const MISSIONS = [
       { id: 'p_artef', type: 'multi', req: true, label: 'Quais artefatos padrão você já tem?', none: 'Nenhum ainda',
         opts: ['Checklist de evento', 'Plano de ação 5W2H', 'Modelo de ata', 'Convites padrão', 'Autorização de imagem', 'Identidade visual', 'Inscrição e presença', 'Relatório de ação'] },
       { id: 'p_repo', type: 'choice', req: true, label: 'Você tem um repositório com esses itens?', opts: ['Sim', 'Em parte', 'Não'] },
-      { id: 'p_repo_onde', type: 'text', label: 'Onde?', ph: 'Ex.: pasta no Google Drive da regional', showIf: ['p_repo', ['Sim', 'Em parte']] }
+      { id: 'p_repo_onde', type: 'text', label: 'Onde?', ph: 'Ex.: pasta no Google Drive da regional', showIf: ['p_repo', ['Sim', 'Em parte']] },
+      { id: 'p_ferr', type: 'multi', req: true, label: 'Quais ferramentas você já usa para gestão de projetos?', help: 'Pode marcar mais de uma.', none: 'Nenhuma ainda',
+        opts: ['Trello', 'ClickUp', 'Planilha (Excel / Google Planilhas)', 'Notion', 'Todoist', 'Bloco de notas', 'Outra'] },
+      { id: 'p_ferr_outra', type: 'text', req: true, label: 'Qual outra ferramenta?', ph: 'Ex.: Asana, Jira, Microsoft Planner…', showIf: ['p_ferr', 'Outra'] }
     ]
   },
   {
@@ -404,7 +407,7 @@ const $ = (s, el=document) => el.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function toast(t){ const el=$('#toast'); el.textContent=t; el.classList.add('on'); clearTimeout(el._t); el._t=setTimeout(()=>el.classList.remove('on'),1800); }
 const val = id => S.a[id];
-function visible(f){ if(!f.showIf) return true; const v = val(f.showIf[0]); const want = f.showIf[1]; return Array.isArray(want) ? want.includes(v) : v === want; }
+function visible(f){ if(!f.showIf) return true; const v = val(f.showIf[0]); const want = f.showIf[1]; if(Array.isArray(v)) return Array.isArray(want) ? want.some(w=>v.includes(w)) : v.includes(want); return Array.isArray(want) ? want.includes(v) : v === want; }
 function filled(f){
   const v = val(f.id);
   if(f.type==='compose') return f.parts.every(p => (val(p[1])||'').trim());
@@ -535,7 +538,7 @@ function bind(m){
       else { if(f.max && arr.filter(x=>x!==f.none).length>=f.max){ toast('Escolha até '+f.max); return; } arr = arr.filter(x=>x!==f.none); arr.push(v); }
       S.a[id]=arr;
       body.querySelectorAll(`button[data-multi="${id}"]`).forEach(x=>x.setAttribute('aria-pressed', arr.includes(x.dataset.v)));
-      save(); updBadge(m); renderMap(); };
+      save(); applyVisibility(m); updBadge(m); renderMap(); };
   });
   body.querySelectorAll('button[data-scale]').forEach(b=>{
     b.onclick = ()=>{ const id=b.dataset.scale, k=b.dataset.k; const o = Object.assign({}, S.a[id]||{});
