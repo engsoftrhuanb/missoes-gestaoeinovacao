@@ -261,12 +261,12 @@ const MISSIONS = [
     ]
   },
   {
-    n: 5, key: 'pesquisa', title: 'Minha pesquisa', color: 'or',
+    n: 5, key: 'pesquisa', title: 'Meus benchmarkings', color: 'or',
     intro: 'Benchmarking: aprender com quem já resolveu um problema parecido.',
     fields: [
       { id: 'b_ja', type: 'choice', req: true, label: 'Você já fez algum tipo de benchmarking?', opts: ['Sim', 'Não'] },
       { id: 'b_ja_tipo', type: 'multi', req: true, label: 'Qual tipo?', showIf: ['b_ja', 'Sim'], opts: ['Interno', 'Competitivo', 'Funcional', 'Genérico'] },
-      { id: 'b_tipo', type: 'choice', req: true, label: 'Para o seu desafio, qual benchmarking poderia ser feito?',
+      { id: 'b_tipo', type: 'multi', req: true, label: 'Para o seu desafio, que tipos de benchmarking poderiam ser feitos?', help: 'Pode marcar mais de um.',
         opts: ['Interno — processos da mesma organização', 'Competitivo — organizações do mesmo ramo', 'Funcional — setores diferentes, problema parecido', 'Genérico — novas soluções em outros setores'] },
       { id: 'b_quem', type: 'area', req: true, label: 'Com quem ou onde?', ph: 'Ex.: outra regional do CREA-Jr, uma empresa júnior, uma startup…' },
       { id: 'b_aprender', type: 'area', label: 'O que você quer aprender com eles?', ph: 'Opcional.' }
@@ -293,11 +293,11 @@ const MISSIONS = [
       { id: 'i_meta', type: 'text', req: true, label: 'Meta (Y)', ph: 'Ex.: 15', half: true },
       { id: 'i_prazo', type: 'text', req: true, label: 'Até quando', ph: 'Ex.: 30/09' },
       { id: 'i_hip', type: 'hypothesis' },
-      { id: 'i_acao', type: 'text', label: 'Ação que vai mover o número', ph: 'Ex.: a palestra na instituição nova' }
+      { id: 'i_acao', type: 'text', req: true, label: 'Ação que vai mover o número', ph: 'Ex.: a palestra na instituição nova' }
     ]
   },
   {
-    n: 8, key: 'plano', title: 'Gestão de Projetos', color: 'lm',
+    n: 8, key: 'plano', title: 'Meus projetos', color: 'lm',
     intro: 'Escolha uma tarefa do seu desafio e coloque no formato 5W2H.',
     fields: [
       { id: 'p_what', type: 'text', req: true, label: 'What · O quê?', ph: 'A entrega concreta' },
@@ -622,13 +622,13 @@ function makePDF(){
   function need(h){ if(y+h > H-56){ newPage(false); } }
   newPage(true);
 
-  const label=(s,c)=>{ const ls=wrap(s.toUpperCase(),'B',7.5,CW-14); need(12*ls.length+4); ls.forEach(l=>{ text(M+14,y+8,l,'B',7.5,c||SOFT); y+=11; }); y+=2; };
+  const label=(s,c)=>{ const ls=wrap(s.toUpperCase(),'B',7.5,CW-14); need(12*ls.length+4+22); ls.forEach(l=>{ text(M+14,y+8,l,'B',7.5,c||SOFT); y+=11; }); y+=2; };
   const para=(s,size=10.5,font='R',c=INK)=>{ const ls=wrap(s,font,size,CW-14); ls.forEach(l=>{ need(size*1.42); text(M+14,y+size,l,font,size,c); y+=size*1.42; }); };
   const gap=h=>{ y+=h; };
 
   MISSIONS.forEach(m=>{
     const pc = PDFCOL[m.color];
-    need(60);
+    need(m.fields.some(f=>f.type==='scale') && !m.fields.some(f=>f.type==='multi') ? 120 : 95);
     rect(M,y,CW,30,[245,247,252]);
     rect(M,y,4,30,pc);
     text(M+14,y+19.5,'FASE '+pad(m.n),'B',10,pc);
@@ -656,9 +656,9 @@ function makePDF(){
         const o=v||{}; const items=f.items.filter(i=>i[0]!=='#'); if(!items.some(i=>o[i[0]])) return;
         if(f.label){ label(f.label,pc); }
         f.items.forEach(it=>{
-          if(it[0]==='#'){ need(18); text(M+14,y+10,it[1].toUpperCase(),'B',7.5,pc); y+=15; return; }
+          if(it[0]==='#'){ const nx=f.items[f.items.indexOf(it)+1]; need(15+ (nx? wrap(nx[1],'R',10,CW-110).length*14+4 : 0) + (nx===f.items[f.items.length-1]?24:0) + 4); text(M+14,y+10,it[1].toUpperCase(),'B',7.5,pc); y+=15; return; }
           const a=o[it[0]]||'—'; const ok_ = a===(it[3]?'Não':'Sim'); const tc = a==='—'?MUTE:a==='Em parte'?[196,140,0]:ok_?[98,150,0]:[222,44,104];
-          const ls=wrap(it[1],'R',10,CW-110); need(ls.length*14+4);
+          const ls=wrap(it[1],'R',10,CW-110); need(ls.length*14+4+(it===f.items[f.items.length-1]?24:0));
           rect(M+14,y+1.5,62,14,tc); const aw=tw(toWin(a.toUpperCase()),'Helvetica-Bold',7.5);
           text(M+14+(62-aw)/2,y+11,a.toUpperCase(),'B',7.5,[255,255,255]);
           ls.forEach((l,k)=>{ text(M+88,y+11+k*14,l,'R',10,INK); }); y+=ls.length*14+5;
