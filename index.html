@@ -62,6 +62,15 @@ textarea{min-height:88px;resize:vertical}
 input[type=text]:focus,textarea:focus{border-color:var(--c)}
 ::placeholder{color:#5d6b92}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.row2u{display:grid;grid-template-columns:1fr 104px;gap:12px}
+select{width:100%;background:var(--bg);color:var(--ink);border:1.5px solid var(--line);border-radius:12px;padding:13px 12px;font-size:16px;outline:none;-webkit-appearance:none;appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--mute) 50%),linear-gradient(135deg,var(--mute) 50%,transparent 50%);background-position:calc(100% - 18px) 21px,calc(100% - 13px) 21px;background-size:5px 5px;background-repeat:no-repeat}
+select:focus{border-color:var(--c)}
+.legend{background:var(--bg);border:1.5px solid var(--line);border-radius:14px;padding:12px 14px}
+.legend .h{font-family:var(--hf);font-weight:800;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--c);margin-bottom:8px}
+.legend .r{display:flex;gap:10px;align-items:baseline;padding:5px 0;border-top:1px solid var(--line);font-size:14px;line-height:1.4;color:var(--soft)}
+.legend .r:first-of-type{border-top:0}
+.legend .r b{flex:none;font-family:var(--hf);font-weight:900;font-size:12px;color:var(--bg);background:var(--c);border-radius:6px;padding:2px 7px}
+.fld.sep{border-top:1.5px dashed var(--line);padding-top:18px}
 @media (max-width:420px){.row2{grid-template-columns:1fr}}
 
 /* missão */
@@ -145,7 +154,7 @@ input[type=text]:focus,textarea:focus{border-color:var(--c)}
   <!-- boas-vindas -->
   <section class="screen" id="s-start">
     <span class="hero-chip">★ Nova jornada desbloqueada</span>
-    <h1>Gestão e Inovação:<br><em>11 fases</em> para o seu desafio</h1>
+    <h1>Gestão e Inovação:<br><em>11 fases</em> para o mindset inovador</h1>
     <p class="lead">Ao longo do workshop, cada fase da apresentação libera uma missão aqui. No final, você baixa o seu canvas em PDF.</p>
     <ul class="how">
       <li><span class="dot" style="background:var(--cy)">1</span><span><b>Uma missão por fase.</b> Preencha quando o slide da fase aparecer.</span></li>
@@ -154,7 +163,11 @@ input[type=text]:focus,textarea:focus{border-color:var(--c)}
     </ul>
     <div class="card">
       <div class="fld"><label class="lbl" for="nome">Seu nome <span class="req">*</span></label><input type="text" id="nome" autocomplete="name" placeholder="Como você quer aparecer no PDF"></div>
-      <div class="fld"><label class="lbl" for="inst">Curso / instituição / regional</label><input type="text" id="inst" placeholder="Opcional"></div>
+      <div class="fld"><label class="lbl" for="curso">Curso <span class="req">*</span></label><input type="text" id="curso" placeholder="Ex.: Engenharia Civil"></div>
+      <div class="row2u">
+        <div class="fld"><label class="lbl" for="inst">Instituição <span class="req">*</span></label><input type="text" id="inst" placeholder="Ex.: UFSC"></div>
+        <div class="fld"><label class="lbl" for="uf">UF <span class="req">*</span></label><select id="uf"><option value="">UF</option><option value="AC">AC</option><option value="AL">AL</option><option value="AP">AP</option><option value="AM">AM</option><option value="BA">BA</option><option value="CE">CE</option><option value="DF">DF</option><option value="ES">ES</option><option value="GO">GO</option><option value="MA">MA</option><option value="MT">MT</option><option value="MS">MS</option><option value="MG">MG</option><option value="PA">PA</option><option value="PB">PB</option><option value="PR">PR</option><option value="PE">PE</option><option value="PI">PI</option><option value="RJ">RJ</option><option value="RN">RN</option><option value="RS">RS</option><option value="RO">RO</option><option value="RR">RR</option><option value="SC">SC</option><option value="SP">SP</option><option value="SE">SE</option><option value="TO">TO</option></select></div>
+      </div>
     </div>
   </section>
 
@@ -207,7 +220,6 @@ const MISSIONS = [
     n: 2, key: 'equipe', title: 'Minha equipe', color: 'cy',
     intro: 'Diagnóstico rápido das pessoas que vão se envolver na resolução do seu desafio.',
     fields: [
-      { id: 'e_quem', type: 'area', label: 'Quem vai se envolver?', ph: 'Nomes, cursos ou funções. Ex.: Ana (civil, comunicação), Pedro (elétrica, finanças)…' },
       { id: 'e_diag', type: 'scale', req: true, label: 'Essa equipe tem…', opts: ['Sim', 'Em parte', 'Não'],
         items: [
           ['skills', 'Core skills', 'As competências essenciais que o desafio exige.'],
@@ -215,7 +227,8 @@ const MISSIONS = [
           ['div', 'Diversidade', 'Pensamentos e vivências diferentes: trajetória, origem, idade, gênero.'],
           ['perfis', 'Perfis comportamentais diferentes', 'Quem executa, quem analisa, quem comunica, quem cria.']
         ] },
-      { id: 'e_falta', type: 'area', label: 'O que falta para a equipe ficar completa?', ph: 'Ex.: alguém de comunicação, um perfil mais analítico…' }
+      { id: 'e_falta', type: 'area', label: 'O que falta para a equipe ficar completa?', ph: 'Ex.: alguém de comunicação, um perfil mais analítico…' },
+      { id: 'e_quem', type: 'area', label: 'Quem vai se envolver?', ph: 'Nomes, cursos ou funções. Ex.: Ana (civil, comunicação), Pedro (elétrica, finanças)…' }
     ]
   },
   {
@@ -235,12 +248,12 @@ const MISSIONS = [
     intro: 'Parcerias, collabs e gatilhos mentais: o que você já fez e o que pode usar no desafio.',
     fields: [
       { id: 'k_collab', type: 'choice', req: true, label: 'Você já fez uma collab com alguém?', opts: ['Sim', 'Não'] },
-      { id: 'k_collab_quem', type: 'text', label: 'Com quem?', ph: 'Empresa, entidade, influenciador, outra regional…', showIf: ['k_collab', 'Sim'] },
+      { id: 'k_collab_quem', type: 'text', req: true, label: 'Com quem?', ph: 'Empresa, entidade, influenciador, outra regional…', showIf: ['k_collab', 'Sim'] },
       { id: 'k_collab_desafio', type: 'area', req: true, label: 'Para o seu desafio, com quem você poderia fazer uma collab?', ph: 'Quem já fala com o público que você quer alcançar?' },
       { id: 'k_gat_usou', type: 'multi', req: true, label: 'Quais gatilhos você já usou em algum momento?', none: 'Nenhum ainda',
-        opts: ['Autoridade', 'Escassez', 'Prova social', 'Reciprocidade', 'Coerência', 'Antecipação', 'Novidade', 'Inimigo comum', 'Curiosidade', 'Exclusividade'] },
+        opts: ['Autoridade', 'Escassez', 'Prova social', 'Reciprocidade', 'Antecipação', 'Novidade', 'Curiosidade', 'Exclusividade', 'Urgência', 'História', 'Comunidade', 'Dor e prazer'] },
       { id: 'k_gat_desafio', type: 'multi', req: true, label: 'Para o seu desafio, quais gatilhos poderiam ser usados?',
-        opts: ['Autoridade', 'Escassez', 'Prova social', 'Reciprocidade', 'Coerência', 'Antecipação', 'Novidade', 'Inimigo comum', 'Curiosidade', 'Exclusividade'] },
+        opts: ['Autoridade', 'Escassez', 'Prova social', 'Reciprocidade', 'Antecipação', 'Novidade', 'Curiosidade', 'Exclusividade', 'Urgência', 'História', 'Comunidade', 'Dor e prazer'] },
       { id: 'k_gat_como', type: 'area', label: 'Como você usaria esses gatilhos?', ph: 'Ex.: vagas limitadas (escassez) + depoimento de quem já participou (prova social).' }
     ]
   },
@@ -249,7 +262,7 @@ const MISSIONS = [
     intro: 'Benchmarking: aprender com quem já resolveu um problema parecido.',
     fields: [
       { id: 'b_ja', type: 'choice', req: true, label: 'Você já fez algum tipo de benchmarking?', opts: ['Sim', 'Não'] },
-      { id: 'b_ja_tipo', type: 'multi', label: 'Qual tipo?', showIf: ['b_ja', 'Sim'], opts: ['Interno', 'Competitivo', 'Funcional', 'Genérico'] },
+      { id: 'b_ja_tipo', type: 'multi', req: true, label: 'Qual tipo?', showIf: ['b_ja', 'Sim'], opts: ['Interno', 'Competitivo', 'Funcional', 'Genérico'] },
       { id: 'b_tipo', type: 'choice', req: true, label: 'Para o seu desafio, qual benchmarking poderia ser feito?',
         opts: ['Interno — processos da mesma organização', 'Competitivo — organizações do mesmo ramo', 'Funcional — setores diferentes, problema parecido', 'Genérico — novas soluções em outros setores'] },
       { id: 'b_quem', type: 'area', req: true, label: 'Com quem ou onde?', ph: 'Ex.: outra regional do CREA-Jr, uma empresa júnior, uma startup…' },
@@ -258,17 +271,13 @@ const MISSIONS = [
   },
   {
     n: 6, key: 'tecnologias', title: 'Minhas tecnologias', color: 'pu',
-    intro: 'Quais tecnologias você já usa hoje e quais poderiam ajudar no desafio?',
+    intro: 'Quais tipos de tecnologia você já usa hoje e quais poderiam ajudar no seu desafio?',
     fields: [
       { id: 't_hoje', type: 'multi', req: true, label: 'Já uso hoje', none: 'Nenhuma',
-        opts: ['IA generativa (ChatGPT, Gemini, Claude…)', 'Automação (Zapier, Make, n8n)', 'Formulários online', 'Planilhas (Excel, Google Planilhas)',
-               'Gestão de tarefas (Trello, ClickUp, Notion)', 'Design (Canva, Figma)', 'Comunicação (WhatsApp, Slack, Discord)', 'Videoconferência (Meet, Teams, Zoom)',
-               'Dashboards (Power BI, Looker Studio)', 'Nuvem (Drive, OneDrive)', 'Redes sociais e agendamento de posts', 'No-code / low-code (Glide, Bubble, AppSheet)'] },
+        opts: ['Hardwares', 'Softwares', 'Aplicativos', 'Dados', 'Plataformas de IA', 'Nuvem', 'Automação e no-code', 'IoT e sensores'] },
       { id: 't_desafio', type: 'multi', req: true, label: 'Poderiam ser usadas no desafio',
-        opts: ['IA generativa (ChatGPT, Gemini, Claude…)', 'Automação (Zapier, Make, n8n)', 'Formulários online', 'Planilhas (Excel, Google Planilhas)',
-               'Gestão de tarefas (Trello, ClickUp, Notion)', 'Design (Canva, Figma)', 'Comunicação (WhatsApp, Slack, Discord)', 'Videoconferência (Meet, Teams, Zoom)',
-               'Dashboards (Power BI, Looker Studio)', 'Nuvem (Drive, OneDrive)', 'Redes sociais e agendamento de posts', 'No-code / low-code (Glide, Bubble, AppSheet)'] },
-      { id: 't_outra', type: 'text', label: 'Outra tecnologia?', ph: 'Opcional.' }
+        opts: ['Hardwares', 'Softwares', 'Aplicativos', 'Dados', 'Plataformas de IA', 'Nuvem', 'Automação e no-code', 'IoT e sensores'] },
+      { id: 't_quais', type: 'area', label: 'Quais ferramentas, especificamente?', ph: 'Opcional. Ex.: ChatGPT para pesquisar, Power BI para o painel, Arduino para medir…' }
     ]
   },
   {
@@ -276,16 +285,16 @@ const MISSIONS = [
     intro: 'Defina o número que vai mostrar se o seu desafio está sendo resolvido.',
     fields: [
       { id: 'i_nome', type: 'text', req: true, label: 'Indicador', ph: 'Ex.: calouros inscritos no CREA-Jr' },
-      { id: 'i_medir', type: 'text', label: 'Como medir (fonte)', ph: 'Ex.: lista de inscrição do formulário' },
-      { id: 'i_atual', type: 'text', label: 'Valor atual (X)', ph: 'Ex.: 6', half: true },
+      { id: 'i_medir', type: 'text', req: true, label: 'Como medir (fonte)', ph: 'Ex.: lista de inscrição do formulário' },
+      { id: 'i_atual', type: 'text', req: true, label: 'Valor atual (X)', ph: 'Ex.: 6', half: true },
       { id: 'i_meta', type: 'text', req: true, label: 'Meta (Y)', ph: 'Ex.: 15', half: true },
-      { id: 'i_prazo', type: 'text', label: 'Até quando', ph: 'Ex.: 30/09', half: true },
-      { id: 'i_acao', type: 'text', label: 'Ação que vai mover o número', ph: 'Ex.: a palestra na instituição nova', half: true },
-      { id: 'i_hip', type: 'hypothesis' }
+      { id: 'i_prazo', type: 'text', req: true, label: 'Até quando', ph: 'Ex.: 30/09' },
+      { id: 'i_hip', type: 'hypothesis' },
+      { id: 'i_acao', type: 'text', label: 'Ação que vai mover o número', ph: 'Ex.: a palestra na instituição nova' }
     ]
   },
   {
-    n: 8, key: 'plano', title: 'Meu plano de ação', color: 'lm',
+    n: 8, key: 'plano', title: 'Gestão de Projetos', color: 'lm',
     intro: 'Escolha uma tarefa do seu desafio e coloque no formato 5W2H.',
     fields: [
       { id: 'p_what', type: 'text', req: true, label: 'What · O quê?', ph: 'A entrega concreta' },
@@ -295,9 +304,9 @@ const MISSIONS = [
       { id: 'p_who', type: 'text', req: true, label: 'Who · Quem?', ph: 'Um nome, não uma equipe', half: true },
       { id: 'p_how', type: 'area', label: 'How · Como?', ph: 'O passo a passo' },
       { id: 'p_much', type: 'text', label: 'How much · Quanto?', ph: 'Custo e recursos' },
-      { id: 'p_artef', type: 'multi', req: true, label: 'Quais artefatos padrão vocês já têm?', none: 'Nenhum ainda',
+      { id: 'p_artef', type: 'multi', req: true, label: 'Quais artefatos padrão você já tem?', none: 'Nenhum ainda',
         opts: ['Checklist de evento', 'Plano de ação 5W2H', 'Modelo de ata', 'Convites padrão', 'Autorização de imagem', 'Identidade visual', 'Inscrição e presença', 'Relatório de ação'] },
-      { id: 'p_repo', type: 'choice', req: true, label: 'Vocês têm um repositório com esses itens?', opts: ['Sim', 'Em parte', 'Não'] },
+      { id: 'p_repo', type: 'choice', req: true, label: 'Você tem um repositório com esses itens?', opts: ['Sim', 'Em parte', 'Não'] },
       { id: 'p_repo_onde', type: 'text', label: 'Onde?', ph: 'Ex.: pasta no Google Drive da regional', showIf: ['p_repo', ['Sim', 'Em parte']] }
     ]
   },
@@ -305,19 +314,21 @@ const MISSIONS = [
     n: 9, key: 'delegar', title: 'O que posso delegar', color: 'ye',
     intro: 'Escreva até duas tarefas que você pode delegar.',
     fields: [
+      { id: 'g_legend', type: 'note', title: 'Níveis de autonomia', items: [['NV 1', 'Faça exatamente como combinamos.'], ['NV 2', 'Pesquise as opções e me traga — eu decido.'], ['NV 3', 'Recomende uma opção e execute após meu ok.'], ['NV 4', 'Decida, me avise antes de executar.'], ['NV 5', 'Decida, execute e me conte no relatório.']] },
       { id: 'g_t1', type: 'text', req: true, label: 'Tarefa 1', ph: 'Ex.: fazer as artes de divulgação' },
-      { id: 'g_q1', type: 'text', label: 'Para quem?', ph: 'Nome', half: true },
-      { id: 'g_n1', type: 'choice', label: 'Nível de autonomia', opts: ['NV 1', 'NV 2', 'NV 3', 'NV 4', 'NV 5'], small: true },
-      { id: 'g_t2', type: 'text', label: 'Tarefa 2', ph: 'Opcional' },
+      { id: 'g_q1', type: 'text', req: true, label: 'Para quem?', ph: 'Nome', half: true },
+      { id: 'g_n1', type: 'choice', req: true, label: 'Nível de autonomia', help: 'Veja o que significa cada nível no quadro acima.', opts: ['NV 1', 'NV 2', 'NV 3', 'NV 4', 'NV 5'], small: true },
+      { id: 'g_t2', type: 'text', label: 'Tarefa 2', ph: 'Opcional', sep: true },
       { id: 'g_q2', type: 'text', label: 'Para quem?', ph: 'Nome', half: true },
-      { id: 'g_n2', type: 'choice', label: 'Nível de autonomia', opts: ['NV 1', 'NV 2', 'NV 3', 'NV 4', 'NV 5'], small: true }
+      { id: 'g_n2', type: 'choice', label: 'Nível de autonomia', help: 'Veja o que significa cada nível no quadro acima.', opts: ['NV 1', 'NV 2', 'NV 3', 'NV 4', 'NV 5'], small: true }
     ]
   },
   {
     n: 10, key: 'comunicacao', title: 'Como está a minha comunicação', color: 'or',
     intro: 'Diagnóstico: marque Sim ou Não para cada combinado de comunicação.',
     fields: [
-      { id: 'c_diag', type: 'scale', req: true, opts: ['Sim', 'Não'], groups: true,
+      { id: 'c_canais', type: 'multi', req: true, label: 'Quais canais a sua equipe usa?', opts: ['WhatsApp', 'E-mail', 'Plataforma de projetos e repositório', 'Reunião'] },
+      { id: 'c_diag', type: 'scale', req: true, label: 'Diagnóstico', opts: ['Sim', 'Não'], groups: true,
         items: [
           ['#', 'Cada canal com um uso'],
           ['canal', 'Cada canal tem um uso definido', 'WhatsApp: urgente e curto · E-mail: oficial · Drive/Notion: documento vivo · Reunião: decisão e conflito.'],
@@ -329,7 +340,7 @@ const MISSIONS = [
           ['#', 'Mensagem que funciona'],
           ['ctx', 'Mensagens trazem contexto + pedido + prazo'],
           ['linhas', 'O essencial está nas 3 primeiras linhas'],
-          ['oi', 'Ninguém manda só “oi”'],
+          ['oi', 'Alguém da equipe costuma mandar só “oi”?', '', true],
           ['nome', 'As pessoas são marcadas pelo nome'],
           ['#', 'Escuta ativa'],
           ['pergunta', 'Perguntamos antes de concluir'],
@@ -349,18 +360,17 @@ const MISSIONS = [
         items: [
           ['#', 'Antes'],
           ['pauta', 'A pauta é enviada 24h antes, com objetivo e decisões esperadas'],
-          ['sempauta', 'Sem pauta, sem reunião — e sem culpa em cancelar'],
           ['material', 'O material de leitura vai junto com a pauta'],
           ['#', 'Durante'],
-          ['revisa', 'Começamos revisando os combinados da reunião anterior'],
-          ['horario', 'Começamos e terminamos no horário, mesmo com atrasados'],
-          ['papeis', 'Um facilitador conduz e um relator anota — e as funções rodam'],
+          ['revisa', 'A reunião começa revisando os combinados da reunião anterior'],
+          ['horario', 'A reunião começa e termina no horário, mesmo com atrasados'],
+          ['papeis', 'Um facilitador conduz, um relator anota, e essas funções rodam'],
           ['estac', 'O que foge da pauta vai para o “estacionamento”'],
           ['#', 'Depois'],
-          ['ata', 'A ata/súmula sai em até 24h, sempre no mesmo lugar'],
+          ['ata', 'A ata/súmula é publicada em até 24h, sempre no mesmo lugar'],
           ['dono', 'Toda tarefa sai com dono e prazo'],
           ['#', 'Encerramento'],
-          ['tres', 'Toda reunião termina respondendo: o que decidimos, quem faz o quê e até quando']
+          ['tres', 'A reunião termina respondendo: o que foi decidido, quem faz o quê e até quando']
         ] }
     ]
   }
@@ -372,7 +382,7 @@ const PDFCOL = { cy:[0,150,178], lm:[98,150,0], ye:[196,160,0], or:[226,118,0], 
 const KEY = 'enac-modo-missao-v1';
 
 // ---------- estado ----------
-let S = { nome:'', inst:'', a:{}, cur:-1 };
+let S = { nome:'', curso:'', inst:'', uf:'', a:{}, cur:-1 };
 let storageOk = true;
 function load(){ try{ const r = localStorage.getItem(KEY); if(r){ S = Object.assign(S, JSON.parse(r)); } }catch(e){ storageOk = false; } }
 let saveT;
@@ -413,11 +423,12 @@ function renderMap(){
 }
 
 function fieldHTML(f){
-  const lab = f.label ? `<span class="lbl">${esc(f.label)}${f.req?' <span class="req">*</span>':''}</span>` : '';
+  const lab = f.label ? `<span class="lbl">${esc(f.label)}${f.req?' <span class="req">*</span>':''}${f.help?`<small>${esc(f.help)}</small>`:''}</span>` : '';
+  const sep = f.sep ? ' sep' : '';
   const v = val(f.id);
   switch(f.type){
-    case 'text': return `<div class="fld" data-f="${f.id}"><label class="lbl" for="${f.id}">${esc(f.label)}${f.req?' <span class="req">*</span>':''}</label><input type="text" id="${f.id}" value="${esc(v||'')}" placeholder="${esc(f.ph||'')}"></div>`;
-    case 'area': return `<div class="fld" data-f="${f.id}"><label class="lbl" for="${f.id}">${esc(f.label)}${f.req?' <span class="req">*</span>':''}</label><textarea id="${f.id}" placeholder="${esc(f.ph||'')}">${esc(v||'')}</textarea></div>`;
+    case 'text': return `<div class="fld${sep}" data-f="${f.id}"><label class="lbl" for="${f.id}">${esc(f.label)}${f.req?' <span class="req">*</span>':''}</label><input type="text" id="${f.id}" value="${esc(v||'')}" placeholder="${esc(f.ph||'')}"></div>`;
+    case 'area': return `<div class="fld${sep}" data-f="${f.id}"><label class="lbl" for="${f.id}">${esc(f.label)}${f.req?' <span class="req">*</span>':''}</label><textarea id="${f.id}" placeholder="${esc(f.ph||'')}">${esc(v||'')}</textarea></div>`;
     case 'choice': return `<div class="fld" data-f="${f.id}">${lab}<div class="chips${f.small?' small':''}" role="group">${f.opts.map(o=>`<button type="button" class="chip" data-id="${f.id}" data-v="${esc(o)}" aria-pressed="${v===o}">${esc(o)}</button>`).join('')}</div></div>`;
     case 'multi': {
       const arr = Array.isArray(v)?v:[];
@@ -426,6 +437,7 @@ function fieldHTML(f){
       return `<div class="fld" data-f="${f.id}">${lab}<div class="chips" role="group">${opts}${none}</div></div>`;
     }
     case 'compose': return `<div class="fld" data-f="${f.id}"><span class="lbl">Escreva o seu desafio <span class="req">*</span><small>Complete as três partes da frase.</small></span><div class="compose">${f.parts.map(p=>`<div class="w">${esc(p[0])}…</div><input type="text" id="${p[1]}" value="${esc(val(p[1])||'')}" placeholder="${esc(p[2])}">`).join('')}</div><div class="preview" id="prev_${f.id}"></div></div>`;
+    case 'note': return `<div class="fld" data-f="${f.id}"><div class="legend"><div class="h">${esc(f.title)}</div>${f.items.map(i=>`<div class="r"><b>${esc(i[0])}</b><span>${esc(i[1])}</span></div>`).join('')}</div></div>`;
     case 'hypothesis': return `<div class="fld" data-f="${f.id}"><div class="preview" id="prev_${f.id}"></div></div>`;
     case 'scale': {
       const o = v||{};
@@ -454,11 +466,12 @@ function updPreviews(m){
     }
     if(f.type==='scale'){
       const el = $('#score_'+f.id); const items = f.items.filter(i=>i[0]!=='#'); const o = val(f.id)||{};
-      const ans = items.filter(i=>o[i[0]]).length; const sim = items.filter(i=>o[i[0]]==='Sim').length; const parte = items.filter(i=>o[i[0]]==='Em parte').length;
+      const good = i => o[i[0]] === (i[3] ? 'Não' : 'Sim');
+      const ans = items.filter(i=>o[i[0]]).length; const sim = items.filter(good).length; const parte = items.filter(i=>o[i[0]]==='Em parte').length;
       let msg;
       if(ans<items.length) msg = `Respondidos ${ans} de ${items.length}.`;
-      else { const r = (sim + parte*.5)/items.length; msg = r>=.8 ? 'Muito bem: isso já funciona na sua equipe.' : r>=.5 ? 'Bom caminho. Escolha um “Não” para atacar primeiro.' : 'Aqui mora uma boa oportunidade de melhoria.'; }
-      el.innerHTML = `<div class="big">${sim}/${items.length}</div><div class="txt"><b style="color:var(--ink)">“Sim” no diagnóstico.</b><br>${msg}</div>`;
+      else { const r = (sim + parte*.5)/items.length; msg = r>=.8 ? 'Muito bem: isso já funciona na sua equipe.' : r>=.5 ? 'Bom caminho. Escolha um ponto fraco para atacar primeiro.' : 'Aqui mora uma boa oportunidade de melhoria.'; }
+      el.innerHTML = `<div class="big">${sim}/${items.length}</div><div class="txt"><b style="color:var(--ink)">No caminho certo.</b><br>${msg}</div>`;
     }
   });
 }
@@ -529,7 +542,7 @@ function show(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.t
 
 function go(i){
   S.cur = i; save();
-  if(i<0){ show('s-start'); document.documentElement.style.setProperty('--c', COL.cy); $('#nome').value=S.nome; $('#inst').value=S.inst; }
+  if(i<0){ show('s-start'); document.documentElement.style.setProperty('--c', COL.cy); $('#nome').value=S.nome; $('#curso').value=S.curso||''; $('#inst').value=S.inst||''; $('#uf').value=S.uf||''; }
   else if(i>=MISSIONS.length){ show('s-end'); renderEnd(); }
   else { show('s-mission'); renderMission(i); }
   $('#prevBtn').disabled = i<0;
@@ -538,16 +551,18 @@ function go(i){
 }
 
 $('#nextBtn').onclick = ()=>{
-  if(S.cur<0){ if(!S.nome.trim()){ toast('Escreva seu nome para começar'); $('#nome').focus(); return; } go(0); return; }
+  if(S.cur<0){ for(const [k,msg] of [['nome','Escreva seu nome'],['curso','Informe o seu curso'],['inst','Informe a sua instituição'],['uf','Selecione a UF']]){ if(!(S[k]||'').trim()){ toast(msg+' para começar'); $('#'+k).focus(); return; } } go(0); return; }
   if(S.cur>=MISSIONS.length){ makePDF(); return; }
   const m = MISSIONS[S.cur]; if(!missionDone(m)) toast('Missão salva. Você pode voltar e completar depois.');
   go(S.cur+1);
 };
 $('#prevBtn').onclick = ()=>go(Math.max(-1, S.cur-1));
 $('#nome').addEventListener('input', e=>{ S.nome=e.target.value; save(); $('#nextBtn').textContent = S.nome?'Continuar':'Começar'; });
+$('#curso').addEventListener('input', e=>{ S.curso=e.target.value; save(); });
 $('#inst').addEventListener('input', e=>{ S.inst=e.target.value; save(); });
+$('#uf').addEventListener('change', e=>{ S.uf=e.target.value; save(); });
 $('#pdfBtn').onclick = ()=>makePDF();
-$('#resetBtn').onclick = ()=>{ if(confirm('Apagar todas as respostas deste aparelho?')){ S = {nome:'',inst:'',a:{},cur:-1}; try{localStorage.removeItem(KEY);}catch(e){} go(-1); toast('Respostas apagadas'); } };
+$('#resetBtn').onclick = ()=>{ if(confirm('Apagar todas as respostas deste aparelho?')){ S = {nome:'',curso:'',inst:'',uf:'',a:{},cur:-1}; try{localStorage.removeItem(KEY);}catch(e){} go(-1); toast('Respostas apagadas'); } };
 
 // ================= PDF =================
 const CP = {0x20AC:0x80,0x201A:0x82,0x0192:0x83,0x201E:0x84,0x2026:0x85,0x2020:0x86,0x2021:0x87,0x02C6:0x88,0x2030:0x89,0x0160:0x8A,0x2039:0x8B,0x0152:0x8C,0x017D:0x8E,0x2018:0x91,0x2019:0x92,0x201C:0x93,0x201D:0x94,0x2022:0x95,0x2013:0x96,0x2014:0x97,0x02DC:0x98,0x2122:0x99,0x0161:0x9A,0x203A:0x9B,0x0153:0x9C,0x017E:0x9E,0x0178:0x9F};
@@ -590,7 +605,8 @@ function makePDF(){
       rect(M,40,6,70,[0,229,255]);
       text(M+18,54,'XI ENAC · MODO MISSÃO','B',9,[0,229,255]);
       text(M+18,82,'Meu canvas de Gestão e Inovação','B',20,[238,243,255]);
-      text(M+18,104,nome + (S.inst?'  ·  '+S.inst:''),'R',11,[180,192,220]);
+      const sub = [S.curso, [S.inst, S.uf].filter(Boolean).join(' / ')].filter(x=>x&&x.trim()).join('  ·  ');
+      text(M+18,104,nome + (sub?'  ·  '+sub:''),'R',11,[180,192,220]);
       const d=doneCount(); text(M+18,122,d+' de 11 missões  ·  '+(d*100)+' XP  ·  '+date,'R',9,[128,144,180]);
       y = 178;
     } else {
@@ -631,22 +647,23 @@ function makePDF(){
         if(g('i_nome')||g('i_meta')){ label('Hipótese',pc); para('“Acreditamos que '+(g('i_acao')||'esta ação')+' vai mover '+(g('i_nome')||'este indicador')+' de '+(g('i_atual')||'X')+' para '+(g('i_meta')||'Y')+' até '+(g('i_prazo')||'esta data')+'.”',10.5,'R'); gap(8); wrote=true; }
         return;
       }
+      if(f.type==='note') return;
       if(f.type==='scale'){
         const o=v||{}; const items=f.items.filter(i=>i[0]!=='#'); if(!items.some(i=>o[i[0]])) return;
         if(f.label){ label(f.label,pc); }
         f.items.forEach(it=>{
           if(it[0]==='#'){ need(18); text(M+14,y+10,it[1].toUpperCase(),'B',7.5,pc); y+=15; return; }
-          const a=o[it[0]]||'—'; const tc = a==='Sim'?[98,150,0]:a==='Não'?[222,44,104]:a==='Em parte'?[196,140,0]:MUTE;
+          const a=o[it[0]]||'—'; const ok_ = a===(it[3]?'Não':'Sim'); const tc = a==='—'?MUTE:a==='Em parte'?[196,140,0]:ok_?[98,150,0]:[222,44,104];
           const ls=wrap(it[1],'R',10,CW-110); need(ls.length*14+4);
           rect(M+14,y+1.5,62,14,tc); const aw=tw(toWin(a.toUpperCase()),'Helvetica-Bold',7.5);
           text(M+14+(62-aw)/2,y+11,a.toUpperCase(),'B',7.5,[255,255,255]);
           ls.forEach((l,k)=>{ text(M+88,y+11+k*14,l,'R',10,INK); }); y+=ls.length*14+5;
         });
-        const sim=items.filter(i=>o[i[0]]==='Sim').length; need(18); text(M+14,y+11,'Resultado: '+sim+' de '+items.length+' com “Sim”.','B',9.5,SOFT); y+=20;
+        const sim=items.filter(i=>o[i[0]]===(i[3]?'Não':'Sim')).length; need(18); text(M+14,y+11,'Resultado: '+sim+' de '+items.length+' no caminho certo.','B',9.5,SOFT); y+=20;
         wrote=true; return;
       }
       if(f.type==='multi'){ if(!Array.isArray(v)||!v.length) return; label(f.label,pc); para(v.join('  ·  '),10.5); gap(8); wrote=true; return; }
-      if(typeof v==='string' && v.trim()){ label(f.label,pc); para(v.trim(),10.5); gap(8); wrote=true; }
+      if(typeof v==='string' && v.trim()){ let tv=v.trim(); if(/^g_n\d/.test(f.id)){ const lg=m.fields.find(x=>x.type==='note'); const it=lg&&lg.items.find(i=>i[0]===tv); if(it) tv+=' — '+it[1]; } label(f.label,pc); para(tv,10.5); gap(8); wrote=true; }
     });
     if(!wrote){ para('Ainda não preenchida.',10,'R',MUTE); gap(6); }
     gap(10);
