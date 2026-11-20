@@ -39,6 +39,9 @@ input,textarea{font:inherit}
 .map button.home{flex:0 0 34px;display:grid;place-items:center;color:var(--cy)}
 .map button.home.cur{color:var(--ink)}
 .map button.home svg{width:16px;height:16px}
+.map button.end{flex:0 0 34px;display:grid;place-items:center;color:var(--ye);border-color:var(--ye)}
+.map button.end.cur{background:var(--ye);color:var(--bg);outline-color:var(--ye)}
+.map button.end svg{width:16px;height:16px}
 
 /* telas */
 .screen{display:none;padding-top:22px}
@@ -212,11 +215,16 @@ select:focus{border-color:var(--c)}
 const MISSIONS = [
   {
     n: 1, key: 'desafio', title: 'Meu desafio', color: 'pk',
-    intro: 'Escolha um desafio real, que você vive ou observa. Ele vai acompanhar você em todas as fases.',
+    intro: 'Escolha um desafio real, que você vive ou observa. Ele vai acompanhar você em todas as missões.',
     fields: [
-      { id: 'd_acao', type: 'compose', req: true,
-        parts: [['Como posso', 'd_acao', 'ação (ex.: aumentar a participação)'], ['para', 'd_quem', 'quem (ex.: calouros de engenharia)'], ['para que', 'd_res', 'resultado (ex.: conheçam o CREA-Jr)']],
-        end: '?' },
+      { id: 'd_prob', type: 'area', req: true, label: 'Qual problema você quer resolver?', ph: 'Ex.: poucos calouros participam das ações do CREA-Jr na minha regional.' },
+      { id: 'd_quem', type: 'text', req: true, label: 'Quem é afetado por esse problema?', ph: 'Ex.: calouros de engenharia da minha instituição' },
+      { id: 'd_res', type: 'area', req: true, label: 'O que muda se ele for resolvido?', ph: 'Ex.: mais calouros conhecem e se associam ao CREA-Jr.' },
+      { id: 'd_card', type: 'challenge' },
+      { id: 'd_hor', type: 'choice', req: true, label: 'Em qual horizonte de inovação está o seu desafio?', help: 'Escolha um.',
+        opts: ['1º horizonte · Aprimorar o que já está funcionando', '2º horizonte · Novos negócios com base no que já domina', '3º horizonte · Experimentação: é hora de arriscar'] },
+      { id: 'd_tipos', type: 'multi', req: true, max: 3, label: 'Quais tipos de inovação podem ser usados no desafio?', help: 'Escolha até 3.',
+        opts: ['Modelo de lucratividade', 'Rede', 'Estrutura', 'Processo', 'Desempenho do produto', 'Sistema de produto', 'Serviço', 'Canal', 'Marca', 'Envolvimento do cliente'] },
       { id: 'd_ctx', type: 'area', label: 'Por que esse desafio importa para você?', ph: 'Opcional: conte em 1 ou 2 frases.' }
     ]
   },
@@ -422,6 +430,9 @@ function renderMap(){
     b.onclick = ()=>go(i);
     map.appendChild(b);
   });
+  const e = document.createElement('button'); e.className = 'end' + (S.cur>=MISSIONS.length ? ' cur' : ''); e.title = 'Página final'; e.setAttribute('aria-label','Página final');
+  e.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4h10v5a5 5 0 0 1-10 0V4z"/><path d="M7 6H4v1a3 3 0 0 0 3 3"/><path d="M17 6h3v1a3 3 0 0 1-3 3"/><path d="M12 14v4"/><path d="M8 21h8"/><path d="M10 18h4"/></svg>';
+  e.onclick = ()=>go(MISSIONS.length); map.appendChild(e);
   const d = doneCount();
   $('#xpTxt').textContent = (d*100)+' XP';
   $('#xpBar').style.width = (d/MISSIONS.length*100)+'%';
@@ -443,6 +454,7 @@ function fieldHTML(f){
     }
     case 'compose': return `<div class="fld" data-f="${f.id}"><span class="lbl">Escreva o seu desafio <span class="req">*</span><small>Complete as três partes da frase.</small></span><div class="compose">${f.parts.map(p=>`<div class="w">${esc(p[0])}…</div><input type="text" id="${p[1]}" value="${esc(val(p[1])||'')}" placeholder="${esc(p[2])}">`).join('')}</div><div class="preview" id="prev_${f.id}"></div></div>`;
     case 'note': return `<div class="fld" data-f="${f.id}"><div class="legend"><div class="h">${esc(f.title)}</div>${f.items.map(i=>`<div class="r"><b>${esc(i[0])}</b><span>${esc(i[1])}</span></div>`).join('')}</div></div>`;
+    case 'challenge': return `<div class="fld" data-f="${f.id}"><div class="preview" id="prev_${f.id}"></div></div>`;
     case 'hypothesis': return `<div class="fld" data-f="${f.id}"><div class="preview" id="prev_${f.id}"></div></div>`;
     case 'scale': {
       const o = v||{};
@@ -462,6 +474,11 @@ function updPreviews(m){
       const el = $('#prev_'+f.id); const ps = f.parts.map(p=>(val(p[1])||'').trim());
       if(ps.every(x=>!x)){ el.className='preview empty'; el.innerHTML='<span class="k">Seu desafio</span>A frase aparece aqui enquanto você escreve.'; }
       else { el.className='preview'; el.innerHTML='<span class="k">Seu desafio</span>'+f.parts.map((p,i)=>esc(p[0])+' <b>'+(ps[i]?esc(ps[i]):'…')+'</b>').join(' ')+esc(f.end); }
+    }
+    if(f.type==='challenge'){
+      const el = $('#prev_'+f.id); const g = k => (val(k)||'').trim();
+      if(!g('d_prob') && !g('d_quem') && !g('d_res')){ el.className='preview empty'; el.innerHTML='<span class="k">Seu desafio</span>Responda as três perguntas para montar o seu desafio.'; }
+      else { el.className='preview'; el.innerHTML='<span class="k">Seu desafio</span><b>Problema:</b> '+(esc(g('d_prob'))||'…')+'<br><b>Quem é afetado:</b> '+(esc(g('d_quem'))||'…')+'<br><b>O que muda:</b> '+(esc(g('d_res'))||'…'); }
     }
     if(f.type==='hypothesis'){
       const el = $('#prev_'+f.id);
@@ -515,7 +532,7 @@ function bind(m){
       const f = m.fields.find(x=>x.id===id);
       if(arr.includes(v)) arr = arr.filter(x=>x!==v);
       else if(b.dataset.none) arr = [v];
-      else { arr = arr.filter(x=>x!==f.none); arr.push(v); }
+      else { if(f.max && arr.filter(x=>x!==f.none).length>=f.max){ toast('Escolha até '+f.max); return; } arr = arr.filter(x=>x!==f.none); arr.push(v); }
       S.a[id]=arr;
       body.querySelectorAll(`button[data-multi="${id}"]`).forEach(x=>x.setAttribute('aria-pressed', arr.includes(x.dataset.v)));
       save(); updBadge(m); renderMap(); };
@@ -647,6 +664,7 @@ function makePDF(){
         if(ps.some(Boolean)){ label('Meu desafio',pc); para(f.parts.map((p,i)=>p[0]+' '+(ps[i]||'…')).join(' ')+f.end, 12.5, 'B'); gap(8); wrote=true; }
         return;
       }
+      if(f.type==='challenge') return;
       if(f.type==='hypothesis'){
         const g=k=>(val(k)||'').trim();
         if(g('i_nome')||g('i_meta')){ label('Hipótese',pc); para('“Acreditamos que '+(g('i_acao')||'esta ação')+' vai mover '+(g('i_nome')||'este indicador')+' de '+(g('i_atual')||'X')+' para '+(g('i_meta')||'Y')+' até '+(g('i_prazo')||'esta data')+'.”',10.5,'R'); gap(8); wrote=true; }
