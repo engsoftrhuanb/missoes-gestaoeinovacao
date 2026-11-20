@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0B1020">
+<title>Modo Missão · XI ENAC · Gestão e Inovação</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0B1020; --panel:#151F3F; --panel2:#111a36; --line:#2A3560; --ink:#EEF3FF; --soft:#B4C0DC; --mute:#8090B4; --track:#26304F;
+  --cy:#00E5FF; --lm:#B6FF00; --ye:#FFEA00; --or:#FF9100; --pk:#FF4F8B; --pu:#B388FF;
+  --hf:'Montserrat', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --bf:'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --c: var(--cy);
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--bf);-webkit-text-size-adjust:100%}
+body{min-height:100vh;padding-bottom:calc(96px + env(safe-area-inset-bottom))}
+button{font:inherit;color:inherit;cursor:pointer}
+input,textarea{font:inherit}
+.wrap{max-width:760px;margin:0 auto;padding:0 18px}
+
+/* topo */
+.top{position:sticky;top:0;z-index:20;background:rgba(11,16,32,.94);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.top .wrap{padding-top:calc(10px + env(safe-area-inset-top));padding-bottom:10px}
+.top-row{display:flex;align-items:center;gap:12px}
+.brand{font-family:var(--hf);font-weight:800;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--cy);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.xp{display:flex;align-items:center;gap:8px;font-family:var(--hf);font-weight:900;font-size:13px;color:var(--lm)}
+.xpbar{width:92px;height:8px;border-radius:4px;background:var(--track);overflow:hidden}
+.xpbar i{display:block;height:100%;background:var(--lm);border-radius:4px;transition:width .4s ease}
+.map{display:flex;gap:6px;margin-top:10px}
+.map button{flex:1;min-width:0;height:28px;border-radius:7px;border:1px solid var(--line);background:var(--panel);font-family:var(--hf);font-weight:800;font-size:11px;color:var(--mute);padding:0}
+.map button.done{background:var(--lm);border-color:var(--lm);color:var(--bg)}
+.map button.cur{outline:2px solid var(--pk);outline-offset:1px;color:var(--ink)}
+.map button.done.cur{color:var(--bg)}
+
+/* telas */
+.screen{display:none;padding-top:22px}
+.screen.on{display:block;animation:rise .35s ease}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+.hero-chip{display:inline-flex;align-items:center;gap:8px;background:var(--ye);color:var(--bg);font-family:var(--hf);font-weight:800;font-size:12px;letter-spacing:.12em;text-transform:uppercase;border-radius:8px;padding:8px 12px}
+h1{font-family:var(--hf);font-weight:900;font-size:clamp(30px,8vw,46px);line-height:1.05;margin:16px 0 10px;letter-spacing:-.01em}
+h1 em{font-style:normal;color:var(--pk)}
+.lead{color:var(--soft);font-size:16px;line-height:1.5;margin:0 0 20px}
+.how{display:grid;gap:10px;margin:0 0 22px;padding:0;list-style:none}
+.how li{display:flex;gap:12px;align-items:flex-start;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px 14px;color:var(--soft);font-size:14px;line-height:1.45}
+.how b{color:var(--ink)}
+.how .dot{flex:none;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;font-family:var(--hf);font-weight:900;font-size:13px;color:var(--bg)}
+
+.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px}
+.fld{margin:0 0 18px}
+.fld:last-child{margin-bottom:0}
+.lbl{display:block;font-family:var(--hf);font-weight:800;font-size:13px;letter-spacing:.04em;color:var(--ink);margin:0 0 8px}
+.lbl small{display:block;font-family:var(--bf);font-weight:400;letter-spacing:0;color:var(--mute);font-size:13px;margin-top:3px}
+.req{color:var(--c)}
+input[type=text],textarea{width:100%;background:var(--bg);color:var(--ink);border:1.5px solid var(--line);border-radius:12px;padding:13px 14px;font-size:16px;line-height:1.4;outline:none;transition:border-color .2s}
+textarea{min-height:88px;resize:vertical}
+input[type=text]:focus,textarea:focus{border-color:var(--c)}
+::placeholder{color:#5d6b92}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:420px){.row2{grid-template-columns:1fr}}
+
+/* missão */
+.mhead{display:flex;align-items:flex-end;gap:14px;margin:0 0 6px}
+.mnum{font-family:var(--hf);font-weight:900;font-size:64px;line-height:.85;color:var(--c);text-shadow:0 0 24px color-mix(in srgb, var(--c) 45%, transparent)}
+.mtitle{padding-bottom:4px}
+.mtitle .k{font-family:var(--hf);font-weight:800;font-size:12px;letter-spacing:.16em;color:var(--c);text-transform:uppercase}
+.mtitle h2{font-family:var(--hf);font-weight:900;font-size:clamp(22px,6vw,30px);line-height:1.1;margin:4px 0 0}
+.mintro{color:var(--soft);font-size:15px;line-height:1.5;margin:10px 0 18px}
+.badge{display:inline-flex;align-items:center;gap:6px;font-family:var(--hf);font-weight:900;font-size:12px;color:var(--bg);background:var(--lm);border-radius:999px;padding:5px 10px;margin-left:auto;align-self:flex-start;white-space:nowrap}
+.badge.no{background:var(--track);color:var(--mute)}
+
+/* chips */
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1.5px solid var(--line);background:var(--bg);border-radius:999px;padding:10px 14px;font-size:14px;line-height:1.25;color:var(--soft);text-align:left;transition:all .15s}
+.chip[aria-pressed=true]{background:var(--c);border-color:var(--c);color:var(--bg);font-weight:700}
+.chip.none[aria-pressed=true]{background:var(--track);border-color:var(--mute);color:var(--ink)}
+.chips.small .chip{padding:8px 12px;font-family:var(--hf);font-weight:800;font-size:13px}
+
+/* composição */
+.compose{background:var(--bg);border:1.5px solid var(--line);border-radius:14px;padding:14px}
+.compose .w{font-family:var(--hf);font-weight:800;font-size:15px;color:var(--c);margin:10px 0 6px}
+.compose .w:first-child{margin-top:0}
+.preview{margin-top:14px;border-radius:14px;padding:14px 16px;background:color-mix(in srgb, var(--c) 12%, var(--bg));border:1.5px solid var(--c);font-size:16px;line-height:1.5;color:var(--ink)}
+.preview .k{display:block;font-family:var(--hf);font-weight:800;font-size:11px;letter-spacing:.14em;color:var(--c);text-transform:uppercase;margin-bottom:6px}
+.preview b{color:var(--c)}
+.preview.empty{border-style:dashed;color:var(--mute)}
+
+/* escala / diagnóstico */
+.scale{display:grid;gap:10px}
+.sitem{background:var(--bg);border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;display:grid;gap:10px}
+.sitem .t{font-weight:600;font-size:15px;line-height:1.4}
+.sitem .d{color:var(--mute);font-size:13px;line-height:1.4;margin-top:2px;font-weight:400}
+.sopts{display:flex;gap:8px}
+.sopts button{flex:1;border:1.5px solid var(--line);background:var(--panel2);border-radius:10px;padding:9px 6px;font-family:var(--hf);font-weight:800;font-size:13px;color:var(--soft)}
+.sopts button[data-v="Sim"][aria-pressed=true]{background:var(--lm);border-color:var(--lm);color:var(--bg)}
+.sopts button[data-v="Em parte"][aria-pressed=true]{background:var(--ye);border-color:var(--ye);color:var(--bg)}
+.sopts button[data-v="Não"][aria-pressed=true]{background:var(--pk);border-color:var(--pk);color:var(--bg)}
+.sgroup{font-family:var(--hf);font-weight:800;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--c);margin:8px 0 -2px}
+.sgroup:first-child{margin-top:0}
+.score{display:flex;align-items:center;gap:12px;margin-top:14px;background:var(--bg);border:1.5px dashed var(--line);border-radius:14px;padding:12px 14px}
+.score .big{font-family:var(--hf);font-weight:900;font-size:28px;color:var(--c);min-width:64px}
+.score .txt{color:var(--soft);font-size:14px;line-height:1.4}
+
+/* navegação inferior */
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:20;background:rgba(11,16,32,.96);border-top:1px solid var(--line);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.nav .wrap{display:flex;gap:10px;padding-top:12px;padding-bottom:calc(12px + env(safe-area-inset-bottom))}
+.btn{border:0;border-radius:14px;padding:15px 18px;font-family:var(--hf);font-weight:900;font-size:15px;letter-spacing:.02em}
+.btn.pri{flex:1;background:var(--c);color:var(--bg)}
+.btn.sec{background:var(--panel);border:1.5px solid var(--line);color:var(--ink)}
+.btn.ghost{background:transparent;border:1.5px solid var(--line);color:var(--soft)}
+.btn:disabled{opacity:.45}
+.saved{font-size:12px;color:var(--mute);text-align:center;margin:14px 0 0}
+.saved b{color:var(--lm);font-weight:600}
+
+/* final */
+.donegrid{display:grid;gap:8px;margin:18px 0}
+.drow{display:flex;align-items:center;gap:12px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 12px;text-align:left;width:100%}
+.drow .n{width:34px;height:34px;flex:none;border-radius:10px;display:grid;place-items:center;font-family:var(--hf);font-weight:900;font-size:13px;color:var(--bg)}
+.drow .t{flex:1;font-weight:600;font-size:14px}
+.drow .s{font-family:var(--hf);font-weight:800;font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+.trophy{font-family:var(--hf);font-weight:900;font-size:13px;letter-spacing:.16em;color:var(--bg);background:var(--lm);border-radius:8px;padding:8px 12px;display:inline-block}
+.warn{color:var(--ye);font-size:13px;line-height:1.45;margin:10px 0 0}
+.toast{position:fixed;left:50%;bottom:calc(100px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--bg);font-weight:700;font-size:14px;border-radius:12px;padding:10px 16px;opacity:0;transition:all .25s;z-index:40;pointer-events:none;max-width:90vw;text-align:center}
+.toast.on{opacity:1;transform:translateX(-50%)}
+.foot{color:var(--mute);font-size:12px;text-align:center;margin:28px 0 8px;letter-spacing:.08em}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <div class="top-row">
+      <div class="brand">XI ENAC · Missões</div>
+      <div class="xp"><span id="xpTxt">0 XP</span><div class="xpbar"><i id="xpBar" style="width:0%"></i></div></div>
+    </div>
+    <nav class="map" id="map" aria-label="Fases"></nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <!-- boas-vindas -->
+  <section class="screen" id="s-start">
+    <span class="hero-chip">★ Nova jornada desbloqueada</span>
+    <h1>Gestão e Inovação:<br><em>11 fases</em> para o seu desafio</h1>
+    <p class="lead">Ao longo do workshop, cada fase da apresentação libera uma missão aqui. No final, você baixa o seu canvas em PDF.</p>
+    <ul class="how">
+      <li><span class="dot" style="background:var(--cy)">1</span><span><b>Uma missão por fase.</b> Preencha quando o slide da fase aparecer.</span></li>
+      <li><span class="dot" style="background:var(--lm)">2</span><span><b>Salvo neste aparelho.</b> Pode fechar e voltar: suas respostas continuam aqui.</span></li>
+      <li><span class="dot" style="background:var(--pk)">3</span><span><b>Seu PDF no final.</b> Um canvas com tudo o que você construiu.</span></li>
+    </ul>
+    <div class="card">
+      <div class="fld"><label class="lbl" for="nome">Seu nome <span class="req">*</span></label><input type="text" id="nome" autocomplete="name" placeholder="Como você quer aparecer no PDF"></div>
+      <div class="fld"><label class="lbl" for="inst">Curso / instituição / regional</label><input type="text" id="inst" placeholder="Opcional"></div>
+    </div>
+  </section>
+
+  <!-- missão -->
+  <section class="screen" id="s-mission">
+    <div class="mhead">
+      <div class="mnum" id="mNum">01</div>
+      <div class="mtitle"><div class="k" id="mKick">Fase 01</div><h2 id="mTitle"></h2></div>
+      <span class="badge no" id="mBadge">+100 XP</span>
+    </div>
+    <p class="mintro" id="mIntro"></p>
+    <div class="card" id="mBody"></div>
+    <p class="saved" id="saved">Respostas <b>salvas neste aparelho</b>.</p>
+  </section>
+
+  <!-- final -->
+  <section class="screen" id="s-end">
+    <span class="trophy">MISSÃO CUMPRIDA</span>
+    <h1 id="endTitle">Seu canvas está pronto</h1>
+    <p class="lead" id="endLead"></p>
+    <button class="btn pri" id="pdfBtn" style="width:100%;--c:var(--lm)">⬇ Baixar meu canvas em PDF</button>
+    <p class="warn" id="pdfWarn" hidden></p>
+    <div class="donegrid" id="doneList"></div>
+    <button class="btn ghost" id="resetBtn" style="width:100%">Apagar respostas e começar do zero</button>
+  </section>
+
+  <p class="foot">XI ENAC · GESTÃO E INOVAÇÃO · RHUAN BITTENCOURT</p>
+</main>
+
+<div class="nav"><div class="wrap">
+  <button class="btn sec" id="prevBtn" aria-label="Voltar">←</button>
+  <button class="btn pri" id="nextBtn">Começar</button>
+</div></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+// Conteúdo das 11 missões (fases) do workshop Gestão e Inovação — XI ENAC
+const MISSIONS = [
+  {
+    n: 1, key: 'desafio', title: 'Meu desafio', color: 'pk',
+    intro: 'Escolha um desafio real, que você vive ou observa. Ele vai acompanhar você em todas as fases.',
+    fields: [
+      { id: 'd_acao', type: 'compose', req: true,
+        parts: [['Como posso', 'd_acao', 'ação (ex.: aumentar a participação)'], ['para', 'd_quem', 'quem (ex.: calouros de engenharia)'], ['para que', 'd_res', 'resultado (ex.: conheçam o CREA-Jr)']],
+        end: '?' },
+      { id: 'd_ctx', type: 'area', label: 'Por que esse desafio importa para você?', ph: 'Opcional: conte em 1 ou 2 frases.' }
+    ]
+  },
+  {
+    n: 2, key: 'equipe', title: 'Minha equipe', color: 'cy',
+    intro: 'Diagnóstico rápido das pessoas que vão se envolver na resolução do seu desafio.',
+    fields: [
+      { id: 'e_quem', type: 'area', label: 'Quem vai se envolver?', ph: 'Nomes, cursos ou funções. Ex.: Ana (civil, comunicação), Pedro (elétrica, finanças)…' },
+      { id: 'e_diag', type: 'scale', req: true, label: 'Essa equipe tem…', opts: ['Sim', 'Em parte', 'Não'],
+        items: [
+          ['skills', 'Core skills', 'As competências essenciais que o desafio exige.'],
+          ['inter', 'Interdisciplinaridade', 'Pessoas de áreas, cursos ou formações diferentes.'],
+          ['div', 'Diversidade', 'Pensamentos e vivências diferentes: trajetória, origem, idade, gênero.'],
+          ['perfis', 'Perfis comportamentais diferentes', 'Quem executa, quem analisa, quem comunica, quem cria.']
+        ] },
+      { id: 'e_falta', type: 'area', label: 'O que falta para a equipe ficar completa?', ph: 'Ex.: alguém de comunicação, um perfil mais analítico…' }
+    ]
+  },
+  {
+    n: 3, key: 'metodos', title: 'Meus métodos', color: 'lm',
+    intro: 'Quais metodologias e ferramentas de inovação você já utilizou? Pode marcar mais de uma.',
+    fields: [
+      { id: 'm_usou', type: 'multi', req: true, label: 'Já utilizei', none: 'Nenhuma ainda',
+        opts: ['Design Thinking', 'Jornada do usuário', 'Mapa de empatia', 'Persona', 'Matriz CSD (certezas, suposições e dúvidas)',
+               'Brainstorming', 'Business Model Canvas / Lean Canvas', 'Protótipo rápido / MVP', 'Matriz impacto × esforço', 'Design Sprint'] },
+      { id: 'm_prox', type: 'choice', label: 'Para o seu desafio, qual você usaria primeiro?',
+        opts: ['Design Thinking', 'Jornada do usuário', 'Mapa de empatia', 'Persona', 'Matriz CSD (certezas, suposições e dúvidas)',
+               'Brainstorming', 'Business Model Canvas / Lean Canvas', 'Protótipo rápido / MVP', 'Matriz impacto × esforço', 'Design Sprint'] }
+    ]
+  },
+  {
+    n: 4, key: 'marketing', title: 'Meu marketing', color: 'ye',
+    intro: 'Parcerias, collabs e gatilhos mentais: o que você já fez e o que pode usar no desafio.',
+    fields: [
+      { id: 'k_collab', type: 'choice', req: true, label: 'Você já fez uma collab com alguém?', opts: ['Sim', 'Não'] },
+      { id: 'k_collab_quem', type: 'text', label: 'Com quem?', ph: 'Empresa, entidade, influenciador, outra regional…', showIf: ['k_collab', 'Sim'] },
+      { id: 'k_collab_desafio', type: 'area', req: true, label: 'Para o seu desafio, com quem você poderia fazer uma collab?', ph: 'Quem já fala com o público que você quer alcançar?' },
+      { id: 'k_gat_usou', type: 'multi', req: true, label: 'Quais gatilhos você já usou em algum momento?', none: 'Nenhum ainda',
+        opts: ['Autoridade', 'Escassez', 'Prova social', 'Reciprocidade', 'Coerência', 'Antecipação', 'Novidade', 'Inimigo comum', 'Curiosidade', 'Exclusividade'] },
+      { id: 'k_gat_desafio', type: 'multi', req: true, label: 'Para o seu desafio, quais gatilhos poderiam ser usados?',
+        opts: ['Autoridade', 'Escassez', 'Prova social', 'Reciprocidade', 'Coerência', 'Antecipação', 'Novidade', 'Inimigo comum', 'Curiosidade', 'Exclusividade'] },
+      { id: 'k_gat_como', type: 'area', label: 'Como você usaria esses gatilhos?', ph: 'Ex.: vagas limitadas (escassez) + depoimento de quem já participou (prova social).' }
+    ]
+  },
+  {
+    n: 5, key: 'pesquisa', title: 'Minha pesquisa', color: 'or',
+    intro: 'Benchmarking: aprender com quem já resolveu um problema parecido.',
+    fields: [
+      { id: 'b_ja', type: 'choice', req: true, label: 'Você já fez algum tipo de benchmarking?', opts: ['Sim', 'Não'] },
+      { id: 'b_ja_tipo', type: 'multi', label: 'Qual tipo?', showIf: ['b_ja', 'Sim'], opts: ['Interno', 'Competitivo', 'Funcional', 'Genérico'] },
+      { id: 'b_tipo', type: 'choice', req: true, label: 'Para o seu desafio, qual benchmarking poderia ser feito?',
+        opts: ['Interno — processos da mesma organização', 'Competitivo — organizações do mesmo ramo', 'Funcional — setores diferentes, problema parecido', 'Genérico — novas soluções em outros setores'] },
+      { id: 'b_quem', type: 'area', req: true, label: 'Com quem ou onde?', ph: 'Ex.: outra regional do CREA-Jr, uma empresa júnior, uma startup…' },
+      { id: 'b_aprender', type: 'area', label: 'O que você quer aprender com eles?', ph: 'Opcional.' }
+    ]
+  },
+  {
+    n: 6, key: 'tecnologias', title: 'Minhas tecnologias', color: 'pu',
+    intro: 'Quais tecnologias você já usa hoje e quais poderiam ajudar no desafio?',
+    fields: [
+      { id: 't_hoje', type: 'multi', req: true, label: 'Já uso hoje', none: 'Nenhuma',
+        opts: ['IA generativa (ChatGPT, Gemini, Claude…)', 'Automação (Zapier, Make, n8n)', 'Formulários online', 'Planilhas (Excel, Google Planilhas)',
+               'Gestão de tarefas (Trello, ClickUp, Notion)', 'Design (Canva, Figma)', 'Comunicação (WhatsApp, Slack, Discord)', 'Videoconferência (Meet, Teams, Zoom)',
+               'Dashboards (Power BI, Looker Studio)', 'Nuvem (Drive, OneDrive)', 'Redes sociais e agendamento de posts', 'No-code / low-code (Glide, Bubble, AppSheet)'] },
+      { id: 't_desafio', type: 'multi', req: true, label: 'Poderiam ser usadas no desafio',
+        opts: ['IA generativa (ChatGPT, Gemini, Claude…)', 'Automação (Zapier, Make, n8n)', 'Formulários online', 'Planilhas (Excel, Google Planilhas)',
+               'Gestão de tarefas (Trello, ClickUp, Notion)', 'Design (Canva, Figma)', 'Comunicação (WhatsApp, Slack, Discord)', 'Videoconferência (Meet, Teams, Zoom)',
+               'Dashboards (Power BI, Looker Studio)', 'Nuvem (Drive, OneDrive)', 'Redes sociais e agendamento de posts', 'No-code / low-code (Glide, Bubble, AppSheet)'] },
+      { id: 't_outra', type: 'text', label: 'Outra tecnologia?', ph: 'Opcional.' }
+    ]
+  },
+  {
+    n: 7, key: 'indicadores', title: 'Meus indicadores', color: 'cy',
+    intro: 'Defina o número que vai mostrar se o seu desafio está sendo resolvido.',
+    fields: [
+      { id: 'i_nome', type: 'text', req: true, label: 'Indicador', ph: 'Ex.: calouros inscritos no CREA-Jr' },
+      { id: 'i_medir', type: 'text', label: 'Como medir (fonte)', ph: 'Ex.: lista de inscrição do formulário' },
+      { id: 'i_atual', type: 'text', label: 'Valor atual (X)', ph: 'Ex.: 6', half: true },
+      { id: 'i_meta', type: 'text', req: true, label: 'Meta (Y)', ph: 'Ex.: 15', half: true },
+      { id: 'i_prazo', type: 'text', label: 'Até quando', ph: 'Ex.: 30/09', half: true },
+      { id: 'i_acao', type: 'text', label: 'Ação que vai mover o número', ph: 'Ex.: a palestra na instituição nova', half: true },
+      { id: 'i_hip', type: 'hypothesis' }
+    ]
+  },
+  {
+    n: 8, key: 'plano', title: 'Meu plano de ação', color: 'lm',
+    intro: 'Escolha uma tarefa do seu desafio e coloque no formato 5W2H.',
+    fields: [
+      { id: 'p_what', type: 'text', req: true, label: 'What · O quê?', ph: 'A entrega concreta' },
+      { id: 'p_why', type: 'text', label: 'Why · Por quê?', ph: 'O propósito, o que muda' },
+      { id: 'p_where', type: 'text', label: 'Where · Onde?', ph: 'Local ou plataforma' },
+      { id: 'p_when', type: 'text', req: true, label: 'When · Quando?', ph: 'Data e marcos', half: true },
+      { id: 'p_who', type: 'text', req: true, label: 'Who · Quem?', ph: 'Um nome, não uma equipe', half: true },
+      { id: 'p_how', type: 'area', label: 'How · Como?', ph: 'O passo a passo' },
+      { id: 'p_much', type: 'text', label: 'How much · Quanto?', ph: 'Custo e recursos' },
+      { id: 'p_artef', type: 'multi', req: true, label: 'Quais artefatos padrão vocês já têm?', none: 'Nenhum ainda',
+        opts: ['Checklist de evento', 'Plano de ação 5W2H', 'Modelo de ata', 'Convites padrão', 'Autorização de imagem', 'Identidade visual', 'Inscrição e presença', 'Relatório de ação'] },
+      { id: 'p_repo', type: 'choice', req: true, label: 'Vocês têm um repositório com esses itens?', opts: ['Sim', 'Em parte', 'Não'] },
+      { id: 'p_repo_onde', type: 'text', label: 'Onde?', ph: 'Ex.: pasta no Google Drive da regional', showIf: ['p_repo', ['Sim', 'Em parte']] }
+    ]
+  },
+  {
+    n: 9, key: 'delegar', title: 'O que posso delegar', color: 'ye',
+    intro: 'Escreva até duas tarefas que você pode delegar.',
+    fields: [
+      { id: 'g_t1', type: 'text', req: true, label: 'Tarefa 1', ph: 'Ex.: fazer as artes de divulgação' },
+      { id: 'g_q1', type: 'text', label: 'Para quem?', ph: 'Nome', half: true },
+      { id: 'g_n1', type: 'choice', label: 'Nível de autonomia', opts: ['NV 1', 'NV 2', 'NV 3', 'NV 4', 'NV 5'], small: true },
+      { id: 'g_t2', type: 'text', label: 'Tarefa 2', ph: 'Opcional' },
+      { id: 'g_q2', type: 'text', label: 'Para quem?', ph: 'Nome', half: true },
+      { id: 'g_n2', type: 'choice', label: 'Nível de autonomia', opts: ['NV 1', 'NV 2', 'NV 3', 'NV 4', 'NV 5'], small: true }
+    ]
+  },
+  {
+    n: 10, key: 'comunicacao', title: 'Como está a minha comunicação', color: 'or',
+    intro: 'Diagnóstico: marque Sim ou Não para cada combinado de comunicação.',
+    fields: [
+      { id: 'c_diag', type: 'scale', req: true, opts: ['Sim', 'Não'], groups: true,
+        items: [
+          ['#', 'Cada canal com um uso'],
+          ['canal', 'Cada canal tem um uso definido', 'WhatsApp: urgente e curto · E-mail: oficial · Drive/Notion: documento vivo · Reunião: decisão e conflito.'],
+          ['#', 'Prazo de resposta combinado'],
+          ['prazo', 'Respondemos em até 24h em dias úteis'],
+          ['silencio', 'Silêncio não é tratado como concordância'],
+          ['avisa', 'Quem não pode responder avisa'],
+          ['horario', 'Fora do horário, só se for urgente'],
+          ['#', 'Mensagem que funciona'],
+          ['ctx', 'Mensagens trazem contexto + pedido + prazo'],
+          ['linhas', 'O essencial está nas 3 primeiras linhas'],
+          ['oi', 'Ninguém manda só “oi”'],
+          ['nome', 'As pessoas são marcadas pelo nome'],
+          ['#', 'Escuta ativa'],
+          ['pergunta', 'Perguntamos antes de concluir'],
+          ['repete', 'Repetimos o que entendemos'],
+          ['interrompe', 'Não interrompemos quem hesita'],
+          ['calado', 'Chamamos quem ficou calado'],
+          ['#', 'Combinado com a equipe'],
+          ['combinado', 'Essas regras foram combinadas com a equipe']
+        ] }
+    ]
+  },
+  {
+    n: 11, key: 'reunioes', title: 'Minhas reuniões', color: 'pk',
+    intro: 'Diagnóstico: marque Sim ou Não para cada ponto de uma reunião de verdade.',
+    fields: [
+      { id: 'r_diag', type: 'scale', req: true, opts: ['Sim', 'Não'], groups: true,
+        items: [
+          ['#', 'Antes'],
+          ['pauta', 'A pauta é enviada 24h antes, com objetivo e decisões esperadas'],
+          ['sempauta', 'Sem pauta, sem reunião — e sem culpa em cancelar'],
+          ['material', 'O material de leitura vai junto com a pauta'],
+          ['#', 'Durante'],
+          ['revisa', 'Começamos revisando os combinados da reunião anterior'],
+          ['horario', 'Começamos e terminamos no horário, mesmo com atrasados'],
+          ['papeis', 'Um facilitador conduz e um relator anota — e as funções rodam'],
+          ['estac', 'O que foge da pauta vai para o “estacionamento”'],
+          ['#', 'Depois'],
+          ['ata', 'A ata/súmula sai em até 24h, sempre no mesmo lugar'],
+          ['dono', 'Toda tarefa sai com dono e prazo'],
+          ['#', 'Encerramento'],
+          ['tres', 'Toda reunião termina respondendo: o que decidimos, quem faz o quê e até quando']
+        ] }
+    ]
+  }
+];
+
+const HW = {"Helvetica":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,278,278,355,556,556,889,667,191,333,333,389,584,278,333,278,278,556,556,556,556,556,556,556,556,556,556,278,278,584,584,584,556,1015,667,667,722,722,667,611,778,722,278,500,667,556,833,722,778,667,778,722,667,611,722,667,944,667,667,611,278,278,278,469,556,333,556,556,500,556,556,278,556,556,222,222,500,222,833,556,556,556,556,333,500,278,556,500,722,500,500,500,334,260,334,584,350,556,350,222,556,333,1000,556,556,333,1000,667,333,1000,350,611,350,350,222,222,333,333,350,556,1000,333,1000,500,333,944,350,500,667,278,333,556,556,556,556,260,556,333,737,370,556,584,333,737,333,400,584,333,333,333,556,537,278,333,333,365,556,834,834,834,611,667,667,667,667,667,667,1000,722,667,667,667,667,278,278,278,278,722,722,778,778,778,778,778,584,778,722,722,722,722,667,667,611,556,556,556,556,556,556,889,500,556,556,556,556,278,278,278,278,556,556,556,556,556,556,556,584,611,556,556,556,556,500,556,500],"Helvetica-Bold":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,278,333,474,556,556,889,722,238,333,333,389,584,278,333,278,278,556,556,556,556,556,556,556,556,556,556,333,333,584,584,584,611,975,722,722,722,722,667,611,778,722,278,556,722,611,833,722,778,667,778,722,667,611,722,667,944,667,667,611,333,278,333,584,556,333,556,611,556,611,556,333,611,611,278,278,556,278,889,611,611,611,611,389,556,333,611,556,778,556,556,500,389,280,389,584,350,556,350,278,556,500,1000,556,556,333,1000,667,333,1000,350,611,350,350,278,278,500,500,350,556,1000,333,1000,556,333,944,350,500,667,278,333,556,556,556,556,280,556,333,737,370,556,584,333,737,333,400,584,333,333,333,611,556,278,333,333,365,556,834,834,834,611,722,722,722,722,722,722,1000,722,667,667,667,667,278,278,278,278,722,722,778,778,778,778,778,584,778,722,722,722,722,667,667,611,556,556,556,556,556,556,889,556,556,556,556,556,278,278,278,278,611,611,611,611,611,611,611,584,611,611,611,611,611,556,611,556]};
+const COL = { cy:'#00E5FF', lm:'#B6FF00', ye:'#FFEA00', or:'#FF9100', pk:'#FF4F8B', pu:'#B388FF' };
+const PDFCOL = { cy:[0,150,178], lm:[98,150,0], ye:[196,160,0], or:[226,118,0], pk:[222,44,104], pu:[124,86,214] };
+const KEY = 'enac-modo-missao-v1';
+
+// ---------- estado ----------
+let S = { nome:'', inst:'', a:{}, cur:-1 };
+let storageOk = true;
+function load(){ try{ const r = localStorage.getItem(KEY); if(r){ S = Object.assign(S, JSON.parse(r)); } }catch(e){ storageOk = false; } }
+let saveT;
+function save(){ clearTimeout(saveT); saveT = setTimeout(()=>{ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){ storageOk = false; } updSaved(); }, 250); }
+function updSaved(){ const el = document.getElementById('saved'); el.innerHTML = storageOk ? 'Respostas <b>salvas neste aparelho</b>.' : 'Atenção: este navegador não permite salvar. Não feche a página antes de baixar o PDF.'; }
+
+// ---------- utilidades ----------
+const $ = (s, el=document) => el.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function toast(t){ const el=$('#toast'); el.textContent=t; el.classList.add('on'); clearTimeout(el._t); el._t=setTimeout(()=>el.classList.remove('on'),1800); }
+const val = id => S.a[id];
+function visible(f){ if(!f.showIf) return true; const v = val(f.showIf[0]); const want = f.showIf[1]; return Array.isArray(want) ? want.includes(v) : v === want; }
+function filled(f){
+  const v = val(f.id);
+  if(f.type==='compose') return f.parts.every(p => (val(p[1])||'').trim());
+  if(f.type==='scale') return f.items.filter(i=>i[0]!=='#').every(i => (v||{})[i[0]]);
+  if(f.type==='multi') return Array.isArray(v) && v.length>0;
+  return typeof v === 'string' && v.trim().length>0;
+}
+function missionDone(m){ return m.fields.filter(f=>f.req && visible(f)).every(filled); }
+function doneCount(){ return MISSIONS.filter(missionDone).length; }
+const pad = n => String(n).padStart(2,'0');
+
+// ---------- render ----------
+function renderMap(){
+  const map = $('#map'); map.innerHTML = '';
+  MISSIONS.forEach((m,i)=>{
+    const b = document.createElement('button');
+    b.textContent = pad(m.n); b.title = 'Fase '+pad(m.n)+' · '+m.title;
+    if(missionDone(m)) b.classList.add('done');
+    if(S.cur===i) b.classList.add('cur');
+    b.onclick = ()=>go(i);
+    map.appendChild(b);
+  });
+  const d = doneCount();
+  $('#xpTxt').textContent = (d*100)+' XP';
+  $('#xpBar').style.width = (d/MISSIONS.length*100)+'%';
+}
+
+function fieldHTML(f){
+  const lab = f.label ? `<span class="lbl">${esc(f.label)}${f.req?' <span class="req">*</span>':''}</span>` : '';
+  const v = val(f.id);
+  switch(f.type){
+    case 'text': return `<div class="fld" data-f="${f.id}"><label class="lbl" for="${f.id}">${esc(f.label)}${f.req?' <span class="req">*</span>':''}</label><input type="text" id="${f.id}" value="${esc(v||'')}" placeholder="${esc(f.ph||'')}"></div>`;
+    case 'area': return `<div class="fld" data-f="${f.id}"><label class="lbl" for="${f.id}">${esc(f.label)}${f.req?' <span class="req">*</span>':''}</label><textarea id="${f.id}" placeholder="${esc(f.ph||'')}">${esc(v||'')}</textarea></div>`;
+    case 'choice': return `<div class="fld" data-f="${f.id}">${lab}<div class="chips${f.small?' small':''}" role="group">${f.opts.map(o=>`<button type="button" class="chip" data-id="${f.id}" data-v="${esc(o)}" aria-pressed="${v===o}">${esc(o)}</button>`).join('')}</div></div>`;
+    case 'multi': {
+      const arr = Array.isArray(v)?v:[];
+      const opts = f.opts.map(o=>`<button type="button" class="chip" data-multi="${f.id}" data-v="${esc(o)}" aria-pressed="${arr.includes(o)}">${esc(o)}</button>`).join('');
+      const none = f.none ? `<button type="button" class="chip none" data-multi="${f.id}" data-none="1" data-v="${esc(f.none)}" aria-pressed="${arr.includes(f.none)}">${esc(f.none)}</button>` : '';
+      return `<div class="fld" data-f="${f.id}">${lab}<div class="chips" role="group">${opts}${none}</div></div>`;
+    }
+    case 'compose': return `<div class="fld" data-f="${f.id}"><span class="lbl">Escreva o seu desafio <span class="req">*</span><small>Complete as três partes da frase.</small></span><div class="compose">${f.parts.map(p=>`<div class="w">${esc(p[0])}…</div><input type="text" id="${p[1]}" value="${esc(val(p[1])||'')}" placeholder="${esc(p[2])}">`).join('')}</div><div class="preview" id="prev_${f.id}"></div></div>`;
+    case 'hypothesis': return `<div class="fld" data-f="${f.id}"><div class="preview" id="prev_${f.id}"></div></div>`;
+    case 'scale': {
+      const o = v||{};
+      const rows = f.items.map(it=>{
+        if(it[0]==='#') return `<div class="sgroup">${esc(it[1])}</div>`;
+        return `<div class="sitem"><div><div class="t">${esc(it[1])}</div>${it[2]?`<div class="d">${esc(it[2])}</div>`:''}</div><div class="sopts">${f.opts.map(op=>`<button type="button" data-scale="${f.id}" data-k="${it[0]}" data-v="${op}" aria-pressed="${o[it[0]]===op}">${op}</button>`).join('')}</div></div>`;
+      }).join('');
+      return `<div class="fld" data-f="${f.id}">${lab}<div class="scale">${rows}</div><div class="score" id="score_${f.id}"></div></div>`;
+    }
+  }
+  return '';
+}
+
+function updPreviews(m){
+  m.fields.forEach(f=>{
+    if(f.type==='compose'){
+      const el = $('#prev_'+f.id); const ps = f.parts.map(p=>(val(p[1])||'').trim());
+      if(ps.every(x=>!x)){ el.className='preview empty'; el.innerHTML='<span class="k">Seu desafio</span>A frase aparece aqui enquanto você escreve.'; }
+      else { el.className='preview'; el.innerHTML='<span class="k">Seu desafio</span>'+f.parts.map((p,i)=>esc(p[0])+' <b>'+(ps[i]?esc(ps[i]):'…')+'</b>').join(' ')+esc(f.end); }
+    }
+    if(f.type==='hypothesis'){
+      const el = $('#prev_'+f.id);
+      const g = k => (val(k)||'').trim();
+      if(!g('i_nome') && !g('i_meta')){ el.className='preview empty'; el.innerHTML='<span class="k">Sua hipótese</span>Preencha os campos para montar a frase.'; }
+      else { el.className='preview'; el.innerHTML='<span class="k">Sua hipótese</span>“Acreditamos que <b>'+esc(g('i_acao')||'esta ação')+'</b> vai mover <b>'+esc(g('i_nome')||'este indicador')+'</b> de <b>'+esc(g('i_atual')||'X')+'</b> para <b>'+esc(g('i_meta')||'Y')+'</b> até <b>'+esc(g('i_prazo')||'esta data')+'</b>.”'; }
+    }
+    if(f.type==='scale'){
+      const el = $('#score_'+f.id); const items = f.items.filter(i=>i[0]!=='#'); const o = val(f.id)||{};
+      const ans = items.filter(i=>o[i[0]]).length; const sim = items.filter(i=>o[i[0]]==='Sim').length; const parte = items.filter(i=>o[i[0]]==='Em parte').length;
+      let msg;
+      if(ans<items.length) msg = `Respondidos ${ans} de ${items.length}.`;
+      else { const r = (sim + parte*.5)/items.length; msg = r>=.8 ? 'Muito bem: isso já funciona na sua equipe.' : r>=.5 ? 'Bom caminho. Escolha um “Não” para atacar primeiro.' : 'Aqui mora uma boa oportunidade de melhoria.'; }
+      el.innerHTML = `<div class="big">${sim}/${items.length}</div><div class="txt"><b style="color:var(--ink)">“Sim” no diagnóstico.</b><br>${msg}</div>`;
+    }
+  });
+}
+
+function applyVisibility(m){
+  m.fields.forEach(f=>{ const el = document.querySelector(`[data-f="${f.id}"]`); if(el) el.hidden = !visible(f); });
+}
+
+function renderMission(i){
+  const m = MISSIONS[i];
+  document.documentElement.style.setProperty('--c', COL[m.color]);
+  $('#mNum').textContent = pad(m.n); $('#mKick').textContent = 'Fase '+pad(m.n)+' · Missão';
+  $('#mTitle').textContent = m.title; $('#mIntro').textContent = m.intro;
+  // agrupa campos "half" em pares
+  let html = '', buf = [];
+  const flush = ()=>{ if(buf.length){ html += buf.length===2 ? `<div class="row2">${buf.join('')}</div>` : buf.join(''); buf=[]; } };
+  m.fields.forEach(f=>{ const h = fieldHTML(f); if(f.half){ buf.push(h); if(buf.length===2) flush(); } else { flush(); html += h; } });
+  flush();
+  $('#mBody').innerHTML = html;
+  bind(m); applyVisibility(m); updPreviews(m); updBadge(m);
+}
+function updBadge(m){ const b = $('#mBadge'); const d = missionDone(m); b.className = 'badge'+(d?'':' no'); b.textContent = d ? '✓ +100 XP' : '+100 XP'; }
+
+function bind(m){
+  const body = $('#mBody');
+  body.querySelectorAll('input[type=text],textarea').forEach(el=>{
+    el.addEventListener('input', ()=>{ S.a[el.id] = el.value; save(); updPreviews(m); updBadge(m); renderMap(); });
+  });
+  body.querySelectorAll('button[data-id]').forEach(b=>{
+    b.onclick = ()=>{ const id=b.dataset.id; S.a[id] = S.a[id]===b.dataset.v ? '' : b.dataset.v;
+      body.querySelectorAll(`button[data-id="${id}"]`).forEach(x=>x.setAttribute('aria-pressed', S.a[id]===x.dataset.v));
+      save(); applyVisibility(m); updBadge(m); renderMap(); };
+  });
+  body.querySelectorAll('button[data-multi]').forEach(b=>{
+    b.onclick = ()=>{ const id=b.dataset.multi; let arr = Array.isArray(S.a[id])?S.a[id].slice():[]; const v=b.dataset.v;
+      const f = m.fields.find(x=>x.id===id);
+      if(arr.includes(v)) arr = arr.filter(x=>x!==v);
+      else if(b.dataset.none) arr = [v];
+      else { arr = arr.filter(x=>x!==f.none); arr.push(v); }
+      S.a[id]=arr;
+      body.querySelectorAll(`button[data-multi="${id}"]`).forEach(x=>x.setAttribute('aria-pressed', arr.includes(x.dataset.v)));
+      save(); updBadge(m); renderMap(); };
+  });
+  body.querySelectorAll('button[data-scale]').forEach(b=>{
+    b.onclick = ()=>{ const id=b.dataset.scale, k=b.dataset.k; const o = Object.assign({}, S.a[id]||{});
+      o[k] = o[k]===b.dataset.v ? '' : b.dataset.v; S.a[id]=o;
+      body.querySelectorAll(`button[data-scale="${id}"][data-k="${k}"]`).forEach(x=>x.setAttribute('aria-pressed', o[k]===x.dataset.v));
+      save(); updPreviews(m); updBadge(m); renderMap(); };
+  });
+}
+
+function renderEnd(){
+  document.documentElement.style.setProperty('--c', COL.lm);
+  const d = doneCount();
+  $('#endTitle').textContent = d===MISSIONS.length ? 'Todas as 11 fases concluídas!' : 'Seu canvas está pronto';
+  $('#endLead').textContent = (S.nome? S.nome.split(' ')[0]+', você' : 'Você')+' completou '+d+' de '+MISSIONS.length+' missões ('+(d*100)+' XP). Baixe o PDF para guardar e compartilhar.';
+  const list = $('#doneList'); list.innerHTML='';
+  MISSIONS.forEach((m,i)=>{
+    const ok = missionDone(m);
+    const b = document.createElement('button'); b.className='drow'; b.onclick=()=>go(i);
+    b.innerHTML = `<span class="n" style="background:${COL[m.color]}">${pad(m.n)}</span><span class="t">${esc(m.title)}</span><span class="s" style="color:${ok?'var(--lm)':'var(--mute)'}">${ok?'Concluída':'Pendente'}</span>`;
+    list.appendChild(b);
+  });
+  const w = $('#pdfWarn'); if(!S.nome.trim()){ w.hidden=false; w.textContent='Dica: preencha seu nome na tela inicial para ele aparecer no PDF.'; } else w.hidden=true;
+}
+
+function show(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on', s.id===id)); window.scrollTo(0,0); }
+
+function go(i){
+  S.cur = i; save();
+  if(i<0){ show('s-start'); document.documentElement.style.setProperty('--c', COL.cy); $('#nome').value=S.nome; $('#inst').value=S.inst; }
+  else if(i>=MISSIONS.length){ show('s-end'); renderEnd(); }
+  else { show('s-mission'); renderMission(i); }
+  $('#prevBtn').disabled = i<0;
+  $('#nextBtn').textContent = i<0 ? (S.nome?'Continuar':'Começar') : i===MISSIONS.length-1 ? 'Finalizar →' : i>=MISSIONS.length ? 'Baixar PDF' : 'Próxima missão →';
+  renderMap();
+}
+
+$('#nextBtn').onclick = ()=>{
+  if(S.cur<0){ if(!S.nome.trim()){ toast('Escreva seu nome para começar'); $('#nome').focus(); return; } go(0); return; }
+  if(S.cur>=MISSIONS.length){ makePDF(); return; }
+  const m = MISSIONS[S.cur]; if(!missionDone(m)) toast('Missão salva. Você pode voltar e completar depois.');
+  go(S.cur+1);
+};
+$('#prevBtn').onclick = ()=>go(Math.max(-1, S.cur-1));
+$('#nome').addEventListener('input', e=>{ S.nome=e.target.value; save(); $('#nextBtn').textContent = S.nome?'Continuar':'Começar'; });
+$('#inst').addEventListener('input', e=>{ S.inst=e.target.value; save(); });
+$('#pdfBtn').onclick = ()=>makePDF();
+$('#resetBtn').onclick = ()=>{ if(confirm('Apagar todas as respostas deste aparelho?')){ S = {nome:'',inst:'',a:{},cur:-1}; try{localStorage.removeItem(KEY);}catch(e){} go(-1); toast('Respostas apagadas'); } };
+
+// ================= PDF =================
+const CP = {0x20AC:0x80,0x201A:0x82,0x0192:0x83,0x201E:0x84,0x2026:0x85,0x2020:0x86,0x2021:0x87,0x02C6:0x88,0x2030:0x89,0x0160:0x8A,0x2039:0x8B,0x0152:0x8C,0x017D:0x8E,0x2018:0x91,0x2019:0x92,0x201C:0x93,0x201D:0x94,0x2022:0x95,0x2013:0x96,0x2014:0x97,0x02DC:0x98,0x2122:0x99,0x0161:0x9A,0x203A:0x9B,0x0153:0x9C,0x017E:0x9E,0x0178:0x9F};
+function toWin(s){
+  s = String(s||'').replace(/→/g,'->').replace(/×/g,'x').replace(/\r/g,'');
+  let out=[]; for(const ch of s){ const c=ch.codePointAt(0); if(c<0x80 || (c>=0xA0 && c<=0xFF)) out.push(c); else if(CP[c]) out.push(CP[c]); else if(c===0x0A) out.push(10); else if(c>0xFFFF) continue; else out.push(0x3F); }
+  return out;
+}
+function tw(codes, font, size){ const w = HW[{R:'Helvetica',B:'Helvetica-Bold'}[font]||font]; let s=0; for(const c of codes) s += (w[c]||556); return s*size/1000; }
+function wrap(text, font, size, maxw){
+  const lines=[]; String(text||'').split('\n').forEach(par=>{
+    const words = par.split(/\s+/).filter(Boolean); let line='';
+    if(!words.length){ lines.push(''); return; }
+    for(const wd of words){
+      const t = line ? line+' '+wd : wd;
+      if(tw(toWin(t),font,size) <= maxw) line = t;
+      else { if(line) lines.push(line);
+        if(tw(toWin(wd),font,size) > maxw){ let part=''; for(const ch of wd){ if(tw(toWin(part+ch),font,size)>maxw){ lines.push(part); part=ch; } else part+=ch; } line=part; }
+        else line = wd; }
+    }
+    lines.push(line);
+  }); return lines;
+}
+function pdfStr(codes){ let s='('; for(const c of codes){ if(c===0x28||c===0x29||c===0x5C) s+='\\'+String.fromCharCode(c); else if(c===10) continue; else s+=String.fromCharCode(c); } return s+')'; }
+
+function makePDF(){
+  const W=595.28, H=841.89, M=40, CW=W-2*M;
+  const pages=[]; let ops=null, y=0;
+  const F = { R:'Helvetica', B:'Helvetica-Bold' };
+  const rgb = a => a.map(v=>(v/255).toFixed(3)).join(' ');
+  const rect=(x,yy,w,h,c,stroke)=>{ ops.push(`${rgb(c)} ${stroke?'RG':'rg'} ${x.toFixed(2)} ${(H-yy-h).toFixed(2)} ${w.toFixed(2)} ${h.toFixed(2)} re ${stroke?'S':'f'}`); };
+  const text=(x,yy,s,font,size,c)=>{ ops.push(`BT /${font==='B'?'F2':'F1'} ${size} Tf ${rgb(c)} rg ${x.toFixed(2)} ${(H-yy).toFixed(2)} Td ${pdfStr(toWin(s))} Tj ET`); };
+  const INK=[20,26,48], SOFT=[86,96,124], MUTE=[140,150,175], NAVY=[11,16,32], LINE=[220,226,240];
+  const nome = (S.nome||'').trim() || 'Participante';
+  const date = new Date().toLocaleDateString('pt-BR');
+  function newPage(first){
+    ops=[]; pages.push(ops);
+    if(first){
+      rect(0,0,W,150,NAVY);
+      rect(M,40,6,70,[0,229,255]);
+      text(M+18,54,'XI ENAC · MODO MISSÃO','B',9,[0,229,255]);
+      text(M+18,82,'Meu canvas de Gestão e Inovação','B',20,[238,243,255]);
+      text(M+18,104,nome + (S.inst?'  ·  '+S.inst:''),'R',11,[180,192,220]);
+      const d=doneCount(); text(M+18,122,d+' de 11 missões  ·  '+(d*100)+' XP  ·  '+date,'R',9,[128,144,180]);
+      y = 178;
+    } else {
+      text(M,40,'XI ENAC · Gestão e Inovação — '+nome,'B',8,MUTE);
+      rect(M,48,CW,0.8,LINE);
+      y = 70;
+    }
+  }
+  function need(h){ if(y+h > H-56){ newPage(false); } }
+  newPage(true);
+
+  const label=(s,c)=>{ const ls=wrap(s.toUpperCase(),'B',7.5,CW-14); need(12*ls.length+4); ls.forEach(l=>{ text(M+14,y+8,l,'B',7.5,c||SOFT); y+=11; }); y+=2; };
+  const para=(s,size=10.5,font='R',c=INK)=>{ const ls=wrap(s,font,size,CW-14); ls.forEach(l=>{ need(size*1.42); text(M+14,y+size,l,font,size,c); y+=size*1.42; }); };
+  const gap=h=>{ y+=h; };
+
+  MISSIONS.forEach(m=>{
+    const pc = PDFCOL[m.color];
+    need(60);
+    rect(M,y,CW,30,[245,247,252]);
+    rect(M,y,4,30,pc);
+    text(M+14,y+19.5,'FASE '+pad(m.n),'B',10,pc);
+    text(M+66,y+19.5,m.title.toUpperCase(),'B',10.5,INK);
+    const ok = missionDone(m);
+    const st = ok ? '+100 XP' : 'PENDENTE'; const sw = tw(toWin(st),'Helvetica-Bold',8);
+    text(M+CW-12-sw,y+19,st,'B',8,ok?[98,150,0]:MUTE);
+    y += 42;
+    let wrote=false;
+    m.fields.forEach(f=>{
+      if(!visible(f)) return;
+      const v = val(f.id);
+      if(f.type==='compose'){
+        const ps=f.parts.map(p=>(val(p[1])||'').trim());
+        if(ps.some(Boolean)){ label('Meu desafio',pc); para(f.parts.map((p,i)=>p[0]+' '+(ps[i]||'…')).join(' ')+f.end, 12.5, 'B'); gap(8); wrote=true; }
+        return;
+      }
+      if(f.type==='hypothesis'){
+        const g=k=>(val(k)||'').trim();
+        if(g('i_nome')||g('i_meta')){ label('Hipótese',pc); para('“Acreditamos que '+(g('i_acao')||'esta ação')+' vai mover '+(g('i_nome')||'este indicador')+' de '+(g('i_atual')||'X')+' para '+(g('i_meta')||'Y')+' até '+(g('i_prazo')||'esta data')+'.”',10.5,'R'); gap(8); wrote=true; }
+        return;
+      }
+      if(f.type==='scale'){
+        const o=v||{}; const items=f.items.filter(i=>i[0]!=='#'); if(!items.some(i=>o[i[0]])) return;
+        if(f.label){ label(f.label,pc); }
+        f.items.forEach(it=>{
+          if(it[0]==='#'){ need(18); text(M+14,y+10,it[1].toUpperCase(),'B',7.5,pc); y+=15; return; }
+          const a=o[it[0]]||'—'; const tc = a==='Sim'?[98,150,0]:a==='Não'?[222,44,104]:a==='Em parte'?[196,140,0]:MUTE;
+          const ls=wrap(it[1],'R',10,CW-110); need(ls.length*14+4);
+          rect(M+14,y+1.5,62,14,tc); const aw=tw(toWin(a.toUpperCase()),'Helvetica-Bold',7.5);
+          text(M+14+(62-aw)/2,y+11,a.toUpperCase(),'B',7.5,[255,255,255]);
+          ls.forEach((l,k)=>{ text(M+88,y+11+k*14,l,'R',10,INK); }); y+=ls.length*14+5;
+        });
+        const sim=items.filter(i=>o[i[0]]==='Sim').length; need(18); text(M+14,y+11,'Resultado: '+sim+' de '+items.length+' com “Sim”.','B',9.5,SOFT); y+=20;
+        wrote=true; return;
+      }
+      if(f.type==='multi'){ if(!Array.isArray(v)||!v.length) return; label(f.label,pc); para(v.join('  ·  '),10.5); gap(8); wrote=true; return; }
+      if(typeof v==='string' && v.trim()){ label(f.label,pc); para(v.trim(),10.5); gap(8); wrote=true; }
+    });
+    if(!wrote){ para('Ainda não preenchida.',10,'R',MUTE); gap(6); }
+    gap(10);
+  });
+
+  // rodapés
+  pages.forEach((p,i)=>{ ops=p; rect(M,H-40,CW,0.8,LINE); text(M,H-26,'XI ENAC · Gestão e Inovação · Rhuan Bittencourt','R',8,MUTE); const t='Página '+(i+1)+' de '+pages.length; text(W-M-tw(toWin(t),'Helvetica',8),H-26,t,'R',8,MUTE); });
+
+  // monta o arquivo
+  const objs=[]; const add=s=>{ objs.push(s); return objs.length; };
+  const catalog = add(null), pagesObj = add(null);
+  const f1 = add('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>');
+  const f2 = add('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>');
+  const kids=[];
+  pages.forEach(p=>{
+    const content = p.join('\n');
+    const c = add(`<< /Length ${content.length} >>\nstream\n${content}\nendstream`);
+    kids.push(add(`<< /Type /Page /Parent ${pagesObj} 0 R /MediaBox [0 0 ${W} ${H}] /Resources << /Font << /F1 ${f1} 0 R /F2 ${f2} 0 R >> >> /Contents ${c} 0 R >>`));
+  });
+  objs[catalog-1] = `<< /Type /Catalog /Pages ${pagesObj} 0 R >>`;
+  objs[pagesObj-1] = `<< /Type /Pages /Kids [${kids.map(k=>k+' 0 R').join(' ')}] /Count ${kids.length} >>`;
+  const info = add(`<< /Title ${pdfStr(toWin('Canvas Modo Missao - '+nome.normalize('NFD').replace(/[\u0300-\u036f]/g,'')))} /Producer (XI ENAC Modo Missao) >>`);
+  let out='%PDF-1.4\n%\xE2\xE3\xCF\xD3\n'; const offs=[];
+  objs.forEach((o,i)=>{ offs.push(out.length); out += `${i+1} 0 obj\n${o}\nendobj\n`; });
+  const xref = out.length;
+  out += `xref\n0 ${objs.length+1}\n0000000000 65535 f \n` + offs.map(o=>String(o).padStart(10,'0')+' 00000 n \n').join('');
+  out += `trailer\n<< /Size ${objs.length+1} /Root ${catalog} 0 R /Info ${info} 0 R >>\nstartxref\n${xref}\n%%EOF`;
+  const bytes = new Uint8Array(out.length); for(let i=0;i<out.length;i++) bytes[i]=out.charCodeAt(i)&255;
+  const blob = new Blob([bytes],{type:'application/pdf'});
+  const fname = 'canvas-modo-missao-'+(nome.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'participante')+'.pdf';
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href=url; a.download=fname; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url), 60000);
+  toast('PDF gerado: '+fname);
+  return blob;
+}
+
+// ---------- início ----------
+load(); updSaved();
+go(typeof S.cur==='number' ? Math.min(S.cur, MISSIONS.length) : -1);
+</script>
+</body>
+</html>
