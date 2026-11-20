@@ -159,9 +159,9 @@ select:focus{border-color:var(--c)}
   <section class="screen" id="s-start">
     <span class="hero-chip">★ Nova jornada desbloqueada</span>
     <h1>Gestão e Inovação:<br><em>11 fases</em> para o mindset inovador</h1>
-    <p class="lead">Ao longo do workshop, cada fase da apresentação libera uma missão aqui. No final, você baixa o seu canvas em PDF.</p>
+    <p class="lead">Ao longo do workshop, você responde 11 missões sobre o seu próprio desafio. No final, baixa o seu canvas em PDF.</p>
     <ul class="how">
-      <li><span class="dot" style="background:var(--cy)">1</span><span><b>Uma missão por fase.</b> Preencha quando o slide da fase aparecer.</span></li>
+      <li><span class="dot" style="background:var(--cy)">1</span><span><b>Viu o selo, responda.</b> Quando aparecer “Responda a missão” no canto do slide, preencha aquela missão.</span></li>
       <li><span class="dot" style="background:var(--lm)">2</span><span><b>Salvo neste aparelho.</b> Pode fechar e voltar: suas respostas continuam aqui.</span></li>
       <li><span class="dot" style="background:var(--pk)">3</span><span><b>Seu PDF no final.</b> Um canvas com tudo o que você construiu.</span></li>
     </ul>
@@ -416,7 +416,7 @@ function renderMap(){
   h.onclick = ()=>go(-1); map.appendChild(h);
   MISSIONS.forEach((m,i)=>{
     const b = document.createElement('button');
-    b.textContent = pad(m.n); b.title = 'Fase '+pad(m.n)+' · '+m.title;
+    b.textContent = pad(m.n); b.title = 'Missão '+pad(m.n)+' · '+m.title;
     if(missionDone(m)) b.classList.add('done');
     if(S.cur===i) b.classList.add('cur');
     b.onclick = ()=>go(i);
@@ -488,7 +488,7 @@ function applyVisibility(m){
 function renderMission(i){
   const m = MISSIONS[i];
   document.documentElement.style.setProperty('--c', COL[m.color]);
-  $('#mNum').textContent = pad(m.n); $('#mKick').textContent = 'Fase '+pad(m.n)+' · Missão';
+  $('#mNum').textContent = pad(m.n); $('#mKick').textContent = 'Missão '+pad(m.n);
   $('#mTitle').textContent = m.title; $('#mIntro').textContent = m.intro;
   // agrupa campos "half" em pares
   let html = '', buf = [];
@@ -632,8 +632,8 @@ function makePDF(){
     need(m.fields.some(f=>f.type==='scale') && !m.fields.some(f=>f.type==='multi') ? 120 : 95);
     rect(M,y,CW,30,[245,247,252]);
     rect(M,y,4,30,pc);
-    text(M+14,y+19.5,'FASE '+pad(m.n),'B',10,pc);
-    text(M+66,y+19.5,m.title.toUpperCase(),'B',10.5,INK);
+    text(M+14,y+19.5,'MISSÃO '+pad(m.n),'B',10,pc);
+    text(M+86,y+19.5,m.title.toUpperCase(),'B',10.5,INK);
     const ok = missionDone(m);
     const st = ok ? '+100 XP' : 'PENDENTE'; const sw = tw(toWin(st),'Helvetica-Bold',8);
     text(M+CW-12-sw,y+19,st,'B',8,ok?[98,150,0]:MUTE);
