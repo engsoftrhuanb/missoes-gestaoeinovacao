@@ -36,6 +36,9 @@ input,textarea{font:inherit}
 .map button.done{background:var(--lm);border-color:var(--lm);color:var(--bg)}
 .map button.cur{outline:2px solid var(--pk);outline-offset:1px;color:var(--ink)}
 .map button.done.cur{color:var(--bg)}
+.map button.home{flex:0 0 34px;display:grid;place-items:center;color:var(--cy)}
+.map button.home.cur{color:var(--ink)}
+.map button.home svg{width:16px;height:16px}
 
 /* telas */
 .screen{display:none;padding-top:22px}
@@ -327,11 +330,9 @@ const MISSIONS = [
     n: 10, key: 'comunicacao', title: 'Como está a minha comunicação', color: 'or',
     intro: 'Diagnóstico: marque Sim ou Não para cada combinado de comunicação.',
     fields: [
-      { id: 'c_canais', type: 'multi', req: true, label: 'Quais canais a sua equipe usa?', opts: ['WhatsApp', 'E-mail', 'Plataforma de projetos e repositório', 'Reunião'] },
+      { id: 'c_canais', type: 'multi', req: true, label: 'Quais canais a sua equipe usa?', opts: ['WhatsApp', 'E-mail', 'Aplicativos de projetos', 'Aplicativos de repositórios', 'Reunião'] },
       { id: 'c_diag', type: 'scale', req: true, label: 'Diagnóstico', opts: ['Sim', 'Não'], groups: true,
         items: [
-          ['#', 'Cada canal com um uso'],
-          ['canal', 'Cada canal tem um uso definido', 'WhatsApp: urgente e curto · E-mail: oficial · Drive/Notion: documento vivo · Reunião: decisão e conflito.'],
           ['#', 'Prazo de resposta combinado'],
           ['prazo', 'Respondemos em até 24h em dias úteis'],
           ['silencio', 'Silêncio não é tratado como concordância'],
@@ -409,6 +410,9 @@ const pad = n => String(n).padStart(2,'0');
 // ---------- render ----------
 function renderMap(){
   const map = $('#map'); map.innerHTML = '';
+  const h = document.createElement('button'); h.className = 'home' + (S.cur<0 ? ' cur' : ''); h.title = 'Página inicial'; h.setAttribute('aria-label','Página inicial');
+  h.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M10 21v-6h4v6"/></svg>';
+  h.onclick = ()=>go(-1); map.appendChild(h);
   MISSIONS.forEach((m,i)=>{
     const b = document.createElement('button');
     b.textContent = pad(m.n); b.title = 'Fase '+pad(m.n)+' · '+m.title;
